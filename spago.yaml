@@ -1,0 +1,19 @@
+package:
+  name: ags-bindings
+  dependencies:
+    - aff
+    - console
+    - effect
+    - exists
+    - js-promise
+    - js-promise-aff
+    - prelude
+    - record
+    - untagged-union
+  test:
+    main: Test.Main
+    dependencies: []
+workspace:
+  package_set:
+    registry: 49.2.0
+  extra_packages: {}
