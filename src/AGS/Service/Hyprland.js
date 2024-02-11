@@ -16,3 +16,19 @@ export const connectHyprlandActive =
   handler => signal => () =>
     H.active.connect(signal, (_, ...args) => handler(...args))
 
+export const sendMessageImpl =
+  command => () =>
+    H.sendMessage(command)
+
+export const getMonitorImpl =
+  id => () =>
+    H.getMonitor(id)
+
+export const getWorkspaceImpl =
+  id => () =>
+    H.getWorkspace(id)
+
+export const getClientImpl =
+  address => () =>
+    H.getClient(address)
+

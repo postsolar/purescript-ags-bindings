@@ -10,13 +10,19 @@ module AGS.Service.Hyprland
   , HyprlandSignal(..)
   , Hyprland
   , HyprlandActive
+  , sendMessage
+  , getMonitor
+  , getWorkspace
+  , getClient
   ) where
 
 import Prelude
 
 import AGS.Binding (Binding)
 import AGS.Service (class BindServiceProp, class ConnectService, Service)
+import Data.Maybe (Maybe)
 import Effect (Effect)
+import Effect.Aff (Aff)
 import Effect.Uncurried (mkEffectFn1, mkEffectFn2)
 import GObject
   ( class ToSignal
@@ -26,6 +32,8 @@ import GObject
   , mkSignalHandler
   , withSignal
   )
+import Promise.Aff (Promise, toAffE)
+import Untagged.Union (UndefinedOr, uorToMaybe)
 
 foreign import data Hyprland ∷ Service
 foreign import data HyprlandActive ∷ Service
@@ -224,4 +232,26 @@ instance ConnectService HyprlandActive Changed where
   connectService = withSignal connectHyprlandActive
 
 foreign import connectHyprlandActive ∷ SignalHandler → String → Effect HandlerID
+
+-- * Methods
+
+sendMessage ∷ String → Aff String
+sendMessage = toAffE <<< sendMessageImpl
+
+foreign import sendMessageImpl ∷ String → Effect (Promise String)
+
+getMonitor ∷ Int → Effect (Maybe Monitor)
+getMonitor = map uorToMaybe <<< getMonitorImpl
+
+foreign import getMonitorImpl ∷ Int → Effect (UndefinedOr Monitor)
+
+getWorkspace ∷ Int → Effect (Maybe Workspace)
+getWorkspace = map uorToMaybe <<< getWorkspaceImpl
+
+foreign import getWorkspaceImpl ∷ Int → Effect (UndefinedOr Workspace)
+
+getClient ∷ String → Effect (Maybe Client)
+getClient = map uorToMaybe <<< getClientImpl
+
+foreign import getClientImpl ∷ String → Effect (UndefinedOr Client)
 
