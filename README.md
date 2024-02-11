@@ -25,6 +25,18 @@ With flakes:
 Add a module which would serve as entrypoint to AGS.
 It should export a value called `main` which would have the type `Effect { windows ∷ Array Window }`.
 
+Then, create a file `entrypoint.js` which would setup AGS and re-export the windows from the PureScript module.
+
+```js
+import { main } from "./index.js"
+
+// Any necessary AGS setup would go here
+//
+//
+
+export default { windows: main().windows }
+```
+
 #### 2. Compile and bundle the project
 
 ```shell
