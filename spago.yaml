@@ -7,6 +7,7 @@ package:
     - exists
     - js-promise
     - js-promise-aff
+    - nullable
     - prelude
     - record
     - untagged-union

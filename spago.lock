@@ -9,6 +9,7 @@ workspace:
         - exists
         - js-promise
         - js-promise-aff
+        - nullable
         - prelude
         - record
         - untagged-union
@@ -46,6 +47,7 @@ workspace:
         - maybe
         - newtype
         - nonempty
+        - nullable
         - numbers
         - ordered-collections
         - orders
@@ -910,6 +912,14 @@ packages:
       - prelude
       - tuples
       - unfoldable
+  nullable:
+    type: registry
+    version: 6.0.0
+    integrity: sha256-yiGBVl3AD+Guy4kNWWeN+zl1gCiJK+oeIFtZtPCw4+o=
+    dependencies:
+      - effect
+      - functions
+      - maybe
   numbers:
     type: registry
     version: 9.0.1
