@@ -1,0 +1,56 @@
+package:
+  name: ags-bindings-example-simple-bar
+  dependencies:
+    - ags-bindings
+    - console
+    - debug
+    - effect
+    - formatters
+    - now
+    - prelude
+    - yoga-json
+  test:
+    main: Test.Main
+    dependencies: []
+workspace:
+  package_set:
+    registry: 50.0.0
+  extra_packages:
+    ags-bindings:
+      git: https://github.com/postsolar/purescript-ags-bindings.git
+      ref: 05ecdd265dd95441faaf963f9ac815daf616c4de
+    yoga-json:
+      git: https://github.com/rowtype-yoga/purescript-yoga-json.git
+      ref: da7fd729964a9aafa65ec81918bddc1dec12d692
+      dependencies:
+        - arrays
+        - bifunctors
+        - control
+        - datetime
+        - effect
+        - either
+        - exceptions
+        - foldable-traversable
+        - foreign
+        - foreign-object
+        - free
+        - identity
+        - integers
+        - js-bigints
+        - js-date
+        - lists
+        - maybe
+        - newtype
+        - nullable
+        - numbers
+        - ordered-collections
+        - partial
+        - prelude
+        - record
+        - strings
+        - transformers
+        - tuples
+        - typelevel-prelude
+        - unsafe-coerce
+        - variant
+        - yoga-tree
