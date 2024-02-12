@@ -3,7 +3,7 @@ module AGS.Widget.Box
   , box
   ) where
 
-import AGS.Widget (AGSWidgetProps, Widget, SelfOrBinding)
+import AGS.Widget (AGSWidgetProps, SelfOrBinding, Widget)
 import Gtk.Box (GtkBoxProps)
 import Gtk.Container (GtkContainerProps)
 import Gtk.Orientable (GtkOrientableProps)
