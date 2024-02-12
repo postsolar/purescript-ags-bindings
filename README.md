@@ -2,6 +2,11 @@
 
 WIP [AGS](https://github.com/Aylur/ags/) bindings for PureScript.
 
+## Usage examples
+
+Standalone subprojects in the `examples/` directory demonstrate how to use AGS with PureScript.
+Head over to [`examples/README.md`](examples/README.md) for more information.
+
 ## Development
 
 #### 0. [Optional] Load the Nix shell
