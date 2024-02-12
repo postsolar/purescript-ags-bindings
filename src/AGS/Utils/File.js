@@ -1,8 +1,12 @@
 export const readFileImpl =
-  f => () =>
-    Utils.readFile(f)
+  Utils.readFile
 
 export const readFileAsyncImpl =
-  f => () =>
-    Utils.readFileAsync(f)
+  Utils.readFileAsync
+
+export const writeFileImpl =
+  Utils.writeFile
+
+export const writeFileSyncImpl =
+  Utils.writeFileSync
 
