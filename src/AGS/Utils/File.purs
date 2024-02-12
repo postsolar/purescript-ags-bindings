@@ -1,34 +1,34 @@
 module AGS.Utils.File where
 
-import Effect.Uncurried
 import Prelude
 
 import Effect (Effect)
 import Effect.Aff (Aff)
+import Effect.Uncurried (EffectFn1, EffectFn2, runEffectFn1, runEffectFn2)
 import Gio.File (GioFile)
 import Promise.Aff (Promise, toAffE)
 
-class FileLike ∷ Type → Constraint
-class FileLike f
+-- TODO: add primitives for `Gio.File` and write these in PureScript
 
-instance FileLike String
-instance FileLike GioFile
-
-readFile ∷ ∀ f. FileLike f ⇒ f → Effect String
+-- | Read a file synchronously.
+readFile ∷ GioFile → Effect String
 readFile = runEffectFn1 readFileImpl
 
-readFileAsync ∷ ∀ f. FileLike f ⇒ f → Aff String
+-- | Read a file asynchronously.
+readFileAsync ∷ GioFile → Aff String
 readFileAsync = toAffE <<< runEffectFn1 readFileAsyncImpl
 
 foreign import readFileImpl ∷ ∀ a. EffectFn1 a String
 foreign import readFileAsyncImpl ∷ ∀ a. EffectFn1 a (Promise String)
 
-writeFile ∷ { content ∷ String, path ∷ String } → Aff GioFile
-writeFile { content, path } = toAffE (runEffectFn2 writeFileImpl content path)
+-- | Write to a file asynchronously, replacing old contents.
+writeFile ∷ String → GioFile → Aff GioFile
+writeFile content file = toAffE (runEffectFn2 writeFileImpl content file)
 
-writeFileSync ∷ { content ∷ String, path ∷ String } → Effect GioFile
-writeFileSync { content, path } = runEffectFn2 writeFileSyncImpl content path
+-- | Write to a file synchronously, replacing old contents.
+writeFileSync ∷ String → GioFile → Effect GioFile
+writeFileSync = runEffectFn2 writeFileSyncImpl
 
-foreign import writeFileImpl ∷ EffectFn2 String String (Promise GioFile)
-foreign import writeFileSyncImpl ∷ EffectFn2 String String GioFile
+foreign import writeFileImpl ∷ EffectFn2 String GioFile (Promise GioFile)
+foreign import writeFileSyncImpl ∷ EffectFn2 String GioFile GioFile
 

@@ -1,12 +1,18 @@
+// Don't use AGS implementation because it swallows all errors.
 export const readFileImpl =
-  Utils.readFile
+  f =>
+    { const [, bytes] = f.load_contents(null);
+      return new TextDecoder().decode(bytes);
+    }
 
 export const readFileAsyncImpl =
   Utils.readFileAsync
 
-export const writeFileImpl =
-  Utils.writeFile
+// Wrap AGS implementation to work on GioFiles instead of strings
+export const writeFileImpl = (content, file) =>
+  Utils.writeFile(content, file.get_path())
 
-export const writeFileSyncImpl =
-  Utils.writeFileSync
+// Wrap AGS implementation to work on GioFiles instead of strings
+export const writeFileSyncImpl = (content, file) =>
+  Utils.writeFileSync(content, file.get_path())
 
