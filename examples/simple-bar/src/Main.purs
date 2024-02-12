@@ -324,7 +324,7 @@ workspaces = ado
               asOneOf $ Label.label { label: asOneOf $ show id }
           , onClicked:
               Aff.launchAff_ do
-                void $ H.sendMessage $ "dispatch workspace " <> show id
+                void $ H.messageAsync $ "dispatch workspace " <> show id
           , className:
               asOneOf $ activeWsId <#> \actId →
                 guard (actId == id) "focused"

@@ -16,9 +16,13 @@ export const connectHyprlandActive =
   handler => signal => () =>
     H.active.connect(signal, (_, ...args) => handler(...args))
 
-export const sendMessageImpl =
+export const message =
   command => () =>
-    H.sendMessage(command)
+    H.message(command)
+
+export const messageAsyncImpl =
+  command => () =>
+    H.messageAsync(command)
 
 export const getMonitorImpl =
   id => () =>

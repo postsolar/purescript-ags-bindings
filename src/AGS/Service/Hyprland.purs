@@ -10,7 +10,8 @@ module AGS.Service.Hyprland
   , HyprlandSignal(..)
   , Hyprland
   , HyprlandActive
-  , sendMessage
+  , message
+  , messageAsync
   , getMonitor
   , getWorkspace
   , getClient
@@ -235,10 +236,12 @@ foreign import connectHyprlandActive ∷ SignalHandler → String → Effect Han
 
 -- * Methods
 
-sendMessage ∷ String → Aff String
-sendMessage = toAffE <<< sendMessageImpl
+foreign import message ∷ String → Effect String
 
-foreign import sendMessageImpl ∷ String → Effect (Promise String)
+messageAsync ∷ String → Aff String
+messageAsync = toAffE <<< messageAsyncImpl
+
+foreign import messageAsyncImpl ∷ String → Effect (Promise String)
 
 getMonitor ∷ Int → Effect (Maybe Monitor)
 getMonitor = map uorToMaybe <<< getMonitorImpl
