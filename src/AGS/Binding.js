@@ -6,20 +6,9 @@ export const pureBinding =
   value =>
     Variable(value).bind("value")
 
-// TODO: FIXME: this might eventually get pushed upstream, remove it
-const combineBindings = (deps, fn) =>
-  { const update = () => fn(...deps.map(d => d.transformFn(d.emitter[d.prop])))
-    const watcher = Variable(update())
-
-    for (const dep of deps)
-      dep.emitter.connect("changed", () => watcher.setValue(update()))
-
-    return watcher.bind()
-  }
-
 export const applyBinding =
   mf => ma =>
-    combineBindings([mf, ma], (f, a) => f(a))
+    Utils.merge([mf, ma], (f, a) => f(a))
 
 export const bindBinding =
   b1 => fn =>
