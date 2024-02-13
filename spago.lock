@@ -13,9 +13,11 @@ workspace:
         - prelude
         - record
         - untagged-union
+        - web-encoding
       test_dependencies: []
       build_plan:
         - aff
+        - arraybuffer-types
         - arrays
         - assert
         - bifunctors
@@ -69,6 +71,7 @@ workspace:
         - unfoldable
         - unsafe-coerce
         - untagged-union
+        - web-encoding
   package_set:
     address:
       registry: 49.2.0
@@ -573,6 +576,11 @@ packages:
       - tailrec
       - transformers
       - unsafe-coerce
+  arraybuffer-types:
+    type: registry
+    version: 3.0.2
+    integrity: sha256-mQKokysYVkooS4uXbO+yovmV/s8b138Ws3zQvOwIHRA=
+    dependencies: []
   arrays:
     type: registry
     version: 7.3.0
@@ -1131,3 +1139,12 @@ packages:
       - psci-support
       - tuples
       - unsafe-coerce
+  web-encoding:
+    type: registry
+    version: 3.0.0
+    integrity: sha256-lqvbj4Rw9mqgSnKx5vSdeNz4vTGxuRQI/PdSK9+kmk0=
+    dependencies:
+      - arraybuffer-types
+      - effect
+      - newtype
+      - prelude

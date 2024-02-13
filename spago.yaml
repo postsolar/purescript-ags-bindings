@@ -11,6 +11,7 @@ package:
     - prelude
     - record
     - untagged-union
+    - web-encoding
   test:
     main: Test.Main
     dependencies: []

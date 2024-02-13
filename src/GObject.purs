@@ -67,7 +67,7 @@ unsafeConnect = runEffectFn3 connectImpl (reflectSymbol (Proxy @s))
 foreign import connectImpl ∷ ∀ f o. EffectFn3 String f o (HandlerID o)
 
 -- | Disconnect a GObject given its HandlerID.
-disconnect ∷ ∀ s o f. GObjectSignal s o f ⇒ o → HandlerID o → Effect Unit
+disconnect ∷ ∀ @s @o @f. GObjectSignal s o f ⇒ o → HandlerID o → Effect Unit
 disconnect = runEffectFn2 disconnectImpl
 
 foreign import disconnectImpl ∷ ∀ o. EffectFn2 o (HandlerID o) Unit
