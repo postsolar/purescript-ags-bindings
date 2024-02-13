@@ -8,12 +8,20 @@ export const bindHyprlandActive =
   prop => () =>
     H.active.bind(prop)
 
+export const disconnectHyprland =
+  id => () =>
+    H.disconnect(id)
+
+export const disconnectHyprlandActive =
+  id => () =>
+    H.active.disconnect(id)
+
 export const connectHyprland =
-  handler => signal => () =>
+  signal => handler => () =>
     H.connect(signal, (_, ...args) => handler(...args))
 
 export const connectHyprlandActive =
-  handler => signal => () =>
+  signal => handler => () =>
     H.active.connect(signal, (_, ...args) => handler(...args))
 
 export const message =

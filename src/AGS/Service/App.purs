@@ -1,33 +1,27 @@
 module AGS.Service.App
-  ( configDir
-  , windows
-  , App
-  , AppSignal(..)
+  ( App
+  , disconnectApp
   , addWindow
-  , removeWindow
-  , closeWindow
-  , openWindow
-  , toggleWindow
-  , quit
-  , resetCss
   , applyCss
+  , closeWindow
+  , configDir
   , getWindow
+  , openWindow
+  , quit
+  , removeWindow
+  , resetCss
+  , toggleWindow
+  , windows
   ) where
 
 import Prelude
 
-import AGS.Service (class ConnectService, Service)
+import AGS.Service (class ServiceConnect, Service)
 import AGS.Widget.Window (Window)
 import Data.Maybe (Maybe)
 import Effect (Effect)
-import Effect.Uncurried (mkEffectFn2)
-import GObject
-  ( class ToSignal
-  , HandlerID
-  , SignalHandler
-  , mkSignalHandler
-  , withSignal
-  )
+import Effect.Uncurried (EffectFn2)
+import GObject (HandlerID)
 import Untagged.Union (UndefinedOr, uorToMaybe)
 
 foreign import data App ∷ Service
@@ -39,26 +33,15 @@ foreign import windows ∷ Effect (Array Window)
 
 -- * Signals
 
-data AppSignal
-  = ConfigParsed (Effect Unit)
-  | WindowToggled ({ windowName ∷ String, visible ∷ Boolean } → Effect Unit)
+foreign import disconnectApp ∷ HandlerID App → Effect Unit
 
-instance ToSignal AppSignal where
-  toSignal = case _ of
-    ConfigParsed f →
-      { handler: mkSignalHandler f
-      , signal: "config-parsed"
-      }
-    WindowToggled f →
-      { handler: mkSignalHandler $
-          mkEffectFn2 \windowName visible → f { windowName, visible }
-      , signal: "window-toggled"
-      }
+instance ServiceConnect App "config-parsed" (Effect Unit) where
+  connectService = connectApp "config-parsed"
 
-instance ConnectService App AppSignal where
-  connectService = withSignal connectApp
+instance ServiceConnect App "window-toggled" (EffectFn2 String Boolean Unit) where
+  connectService = connectApp "window-toggled"
 
-foreign import connectApp ∷ SignalHandler → String → Effect HandlerID
+foreign import connectApp ∷ ∀ f. String → f → Effect (HandlerID App)
 
 -- * Methods
 

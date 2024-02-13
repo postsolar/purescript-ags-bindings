@@ -13,12 +13,14 @@ import Prelude
 
 import AGS.Binding (Binding)
 import Effect (Effect)
-import GObject (class GObject)
+import Effect.Uncurried (EffectFn1)
+import GObject (class GObjectSignal, unsafeConnect)
 import Unsafe.Coerce (unsafeCoerce)
 
 foreign import data Variable ∷ Type → Type
 
-instance GObject (Variable a)
+instance GObjectSignal "changed" (Variable a) (EffectFn1 (Variable a) Unit) where
+  connect callback variable = unsafeConnect @"changed" callback variable
 
 -- | Get the value of a variable
 get ∷ ∀ a. Variable a → Effect a

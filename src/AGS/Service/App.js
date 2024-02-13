@@ -6,8 +6,12 @@ export const windows =
   () =>
     App.windows
 
+export const disconnectApp =
+  handlerID => () =>
+    App.disconnect(handlerID)
+
 export const connectApp =
-  handler => signal => () =>
+  signal => handler => () =>
     App.connect(signal, (_, ...args) => handler(...args))
 
 export const addWindow =
