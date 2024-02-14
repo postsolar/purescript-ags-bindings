@@ -1,8 +1,16 @@
-module AGS.Binding (Binding, SelfOrBinding) where
+module AGS.Binding
+  ( Binding
+  , SelfOrBinding
+  , class BindProp
+  , bindProp
+  , unsafeBindProp
+  ) where
 
 import Prelude
 
 import Control.Apply (lift2)
+import Data.Symbol (class IsSymbol, reflectSymbol)
+import Type.Proxy (Proxy(..))
 import Untagged.Union (OneOf)
 
 foreign import data Binding ∷ Type → Type
@@ -10,6 +18,15 @@ foreign import data Binding ∷ Type → Type
 type role Binding representational
 
 type SelfOrBinding a = OneOf a (Binding a)
+
+class BindProp ∷ ∀ k. Type → k → Type → Constraint
+class BindProp o p t | o p → t where
+  bindProp ∷ o → Binding t
+
+unsafeBindProp ∷ ∀ @p @o @t. IsSymbol p ⇒ BindProp o p t ⇒ o → Binding t
+unsafeBindProp = unsafeBindPropImpl (reflectSymbol (Proxy @p))
+
+foreign import unsafeBindPropImpl ∷ ∀ o t. String → o → Binding t
 
 -- | Transform the value streamed in a `Binding`.
 instance Functor Binding where

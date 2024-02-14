@@ -1,3 +1,7 @@
+export const unsafeBindPropImpl =
+  prop => object =>
+    object.bind(prop)
+
 export const transform =
   f => binding =>
     binding.transform(f)
