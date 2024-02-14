@@ -10,22 +10,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v3
         with:
           node-version: "lts/*"
 
       - name: Setup PureScript dependencies
-        run: npm i --global purescript@0.15.15 spago@next purs-tidy
+        run: npm i --global purescript@0.15.15 esbuild spago@next purs-tidy
 
-      - name: Chech formatting
+      - name: Check formatting
         run: purs-tidy check src/
 
       - name: Build source
         run: |
-          spago build
-          spago bundle --bundle-type module --bundler-args '--external:gi://*'
+          spago build --strict
+
+      - name: Run tests
+        run: spago test
 
       - name: Cache PureScript dependencies
         uses: actions/cache@v2
