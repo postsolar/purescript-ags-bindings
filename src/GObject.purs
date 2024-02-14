@@ -44,7 +44,7 @@ else instance SignalCallback o (EffectFn8 o b c d e f g h Unit)
 else instance SignalCallback o (EffectFn9 o b c d e f g h i Unit)
 else instance SignalCallback o (EffectFn10 o b c d e f g h i j Unit)
 else instance
-  TE.Fail (TE.Text "Only EffectFnN can have a SignalCallback instance") ⇒
+  TE.Fail (TE.Text "Only EffectFnN with GObject as the first parameter can have a SignalCallback instance") ⇒
   SignalCallback o other
 
 class GObjectSignal ∷ ∀ k. k → Type → Type → Constraint
