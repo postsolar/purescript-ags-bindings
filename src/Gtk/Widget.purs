@@ -1,46 +1,48 @@
 module Gtk.Widget where
 
+import AGS.Binding (SelfOrBinding)
+
 data Widget
 
 type GtkWidgetProps r =
-  ( appPaintable ∷ Boolean
-  , canDefault ∷ Boolean
-  , canFocus ∷ Boolean
-  , compositeChild ∷ Boolean
-  , doubleBuffered ∷ Boolean
+  ( appPaintable ∷ SelfOrBinding Boolean
+  , canDefault ∷ SelfOrBinding Boolean
+  , canFocus ∷ SelfOrBinding Boolean
+  , compositeChild ∷ SelfOrBinding Boolean
+  , doubleBuffered ∷ SelfOrBinding Boolean
   -- , events ∷ Gdk.EventMask
-  , expand ∷ Boolean
-  , focusOnClick ∷ Boolean
+  , expand ∷ SelfOrBinding Boolean
+  , focusOnClick ∷ SelfOrBinding Boolean
   -- , halign ∷ Gtk.Align
-  , hasDefault ∷ Boolean
-  , hasFocus ∷ Boolean
-  , hasTooltip ∷ Boolean
-  , heightRequest ∷ Number
-  , hexpand ∷ Boolean
-  , hexpandSet ∷ Boolean
-  , isFocus ∷ Boolean
-  , margin ∷ Number
-  , marginBottom ∷ Number
-  , marginEnd ∷ Number
-  , marginLeft ∷ Number
-  , marginRight ∷ Number
-  , marginStart ∷ Number
-  , marginTop ∷ Number
-  , name ∷ String
-  , noShowAll ∷ Boolean
-  , opacity ∷ Number
+  , hasDefault ∷ SelfOrBinding Boolean
+  , hasFocus ∷ SelfOrBinding Boolean
+  , hasTooltip ∷ SelfOrBinding Boolean
+  , heightRequest ∷ SelfOrBinding Number
+  , hexpand ∷ SelfOrBinding Boolean
+  , hexpandSet ∷ SelfOrBinding Boolean
+  , isFocus ∷ SelfOrBinding Boolean
+  , margin ∷ SelfOrBinding Number
+  , marginBottom ∷ SelfOrBinding Number
+  , marginEnd ∷ SelfOrBinding Number
+  , marginLeft ∷ SelfOrBinding Number
+  , marginRight ∷ SelfOrBinding Number
+  , marginStart ∷ SelfOrBinding Number
+  , marginTop ∷ SelfOrBinding Number
+  , name ∷ SelfOrBinding String
+  , noShowAll ∷ SelfOrBinding Boolean
+  , opacity ∷ SelfOrBinding Number
   -- , parent ∷ Gtk.Container
-  , receivesDefault ∷ Boolean
-  , scaleFactor ∷ Number
-  , sensitive ∷ Boolean
+  , receivesDefault ∷ SelfOrBinding Boolean
+  , scaleFactor ∷ SelfOrBinding Number
+  , sensitive ∷ SelfOrBinding Boolean
   -- , style ∷ Gtk.Style
-  , tooltipMarkup ∷ String
-  , tooltipText ∷ String
+  , tooltipMarkup ∷ SelfOrBinding String
+  , tooltipText ∷ SelfOrBinding String
   -- , valign ∷ Gtk.Align
-  , vexpand ∷ Boolean
-  , vexpandSet ∷ Boolean
-  , visible ∷ Boolean
-  , widthRequest ∷ Number
+  , vexpand ∷ SelfOrBinding Boolean
+  , vexpandSet ∷ SelfOrBinding Boolean
+  , visible ∷ SelfOrBinding Boolean
+  , widthRequest ∷ SelfOrBinding Number
   -- , window ∷ Gdk.Window
   | r
   )

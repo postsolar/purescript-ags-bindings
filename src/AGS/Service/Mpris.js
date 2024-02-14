@@ -18,7 +18,3 @@ export const players =
   () =>
     M.players
 
-export const matchPlayerImpl =
-  name => () =>
-    M.getPlayer(name)
-
