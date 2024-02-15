@@ -16,7 +16,7 @@ type WindowProps =
   , anchor ∷ Array Anchor.Anchor
   , layer ∷ WindowLayer.WindowLayer
   , exclusivity ∷ Exclusivity.Exclusivity
-  , focusable ∷ Boolean
+  , keymode ∷ String
   , popup ∷ Boolean
   , visible ∷ Boolean
   )
