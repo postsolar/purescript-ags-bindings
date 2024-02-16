@@ -1,3 +1,7 @@
+export const get =
+  v => () =>
+    v.getValue()
+
 export const set =
   f => v => () =>
     v.setValue(f(v.value))
