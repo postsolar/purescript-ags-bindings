@@ -7,11 +7,11 @@ module AGS.Utils.Exec
 
 import Prelude
 
-import AGS.Widget (Widget)
 import Data.Array.NonEmpty (NonEmptyArray, toArray)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Gio.Subprocess (Subprocess, forceSubprocessExit) as Gio.Subprocess
+import Gtk.Widget (Widget)
 import Prim.Row (class Union)
 import Promise (Promise)
 import Promise.Aff (toAffE)

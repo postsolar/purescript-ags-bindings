@@ -1,50 +1,59 @@
-module AGS.Widget
+module AGS.Widget (module Exports) where
+
+import AGS.Binding (Binding, SelfOrBinding, bindProp) as Exports
+import AGS.Widget.Box (BoxProps, box) as Exports
+import AGS.Widget.Button (ButtonProps, button, buttonImpl) as Exports
+import AGS.Widget.CenterBox (CenterBoxProps, centerBox) as Exports
+import AGS.Widget.CircularProgress (CircularProgressProps, circularProgress) as Exports
+import AGS.Widget.Entry (EntryProps, entry) as Exports
+import AGS.Widget.EventBox (EventBoxProps, eventBox) as Exports
+import AGS.Widget.Icon (IconProps, icon) as Exports
+import AGS.Widget.Internal
   ( AGSWidgetProps
-  , AnyF
   , Any
+  , AnyF
+  , grabFocus
   , mkAny
   , unsafeSetProperty
-  , grabFocus
   , withInterval
-  , module AGS.Binding
-  , module Gtk.Widget
-  ) where
-
-import Prelude
-
-import AGS.Binding (SelfOrBinding)
-import Data.Exists (Exists, mkExists)
-import Effect (Effect)
-import Effect.Uncurried (EffectFn1)
-import Gtk.Widget (GtkWidgetProps, Widget)
-import Type.Row (type (+))
-
-type AGSWidgetProps r =
-  GtkWidgetProps
-    +
-      ( setup ∷ EffectFn1 Widget Unit
-      , className ∷ SelfOrBinding String
-      , classNames ∷ Array String
-      , css ∷ String
-      , hpack ∷ String {- TODO make it a proper type -}
-      , vpack ∷ String {- TODO make it a proper type -}
-      , cursor ∷ String {- TODO make it a proper type -}
-      , attribute ∷ Any
-      | r
-      )
-
-newtype AnyF a = AnyF a
-
-type Any = Exists AnyF
-
-mkAny ∷ ∀ a. a → Any
-mkAny = mkExists <<< AnyF
-
--- * Methods
-
-foreign import unsafeSetProperty ∷ ∀ a. String → a → Widget → Effect Unit
-
-foreign import grabFocus ∷ Widget → Effect Unit
-
-foreign import withInterval ∷ Int → Effect Unit → Widget → Effect Unit
+  ) as Exports
+import AGS.Widget.Label (LabelProps, label) as Exports
+import AGS.Widget.Menu (MenuProps, menu) as Exports
+import AGS.Widget.Menu.Item (MenuItem, MenuItemProps, menuItem, menuItemImpl) as Exports
+import AGS.Widget.Overlay (OverlayProps, overlay) as Exports
+import AGS.Widget.ProgressBar (ProgressBarProps, progressBar) as Exports
+import AGS.Widget.Revealer
+  ( GtkRevealerTransitionType
+  , RevealerProps
+  , revealer
+  , transitions
+  ) as Exports
+import AGS.Widget.Scrollable (ScrollableProps, scrollable) as Exports
+import AGS.Widget.Slider
+  ( Mark
+  , MarkPosition
+  , SliderProps
+  , markPositionBottom
+  , markPositionLeft
+  , markPositionRight
+  , markPositionTop
+  , slider
+  ) as Exports
+import AGS.Widget.Stack (StackProps, stack) as Exports
+import AGS.Widget.Window (Window, WindowProps, window) as Exports
+import Effect.Uncurried
+  ( EffectFn1
+  , EffectFn2
+  , EffectFn3
+  , EffectFn4
+  , mkEffectFn1
+  , mkEffectFn2
+  , mkEffectFn3
+  , mkEffectFn4
+  , runEffectFn1
+  , runEffectFn2
+  , runEffectFn3
+  , runEffectFn4
+  ) as Exports
+import Untagged.Union (UndefinedOr, asOneOf) as Exports
 

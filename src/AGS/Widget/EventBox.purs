@@ -5,7 +5,8 @@ module AGS.Widget.EventBox
 
 import Prelude
 
-import AGS.Widget (AGSWidgetProps, Widget)
+import Gtk.Widget (Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Effect (Effect)
 import Gtk.Container (GtkContainerProps)
 import Prim.Row (class Union)

@@ -1,11 +1,12 @@
 module AGS.Widget.Menu.Item where
 
-import AGS.Widget (AGSWidgetProps, Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Effect (Effect)
 import Gtk.Actionable (GtkActionableProps)
 import Gtk.Activatable (GtkActivatableProps)
 import Gtk.Container (GtkContainerProps)
 import Gtk.MenuItem (GtkMenuItemProps)
+import Gtk.Widget (Widget)
 import Prelude ((<<<))
 import Prim.Row (class Union)
 import Type.Row (type (+))

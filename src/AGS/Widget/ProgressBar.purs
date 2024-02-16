@@ -3,7 +3,8 @@ module AGS.Widget.ProgressBar
   , progressBar
   ) where
 
-import AGS.Widget (AGSWidgetProps, Widget)
+import Gtk.Widget (Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Gtk.Orientable (GtkOrientableProps)
 import Gtk.ProgressBar (GtkProgressBarProps)
 import Prelude ((<<<))

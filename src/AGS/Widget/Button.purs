@@ -2,7 +2,9 @@ module AGS.Widget.Button where
 
 import Prelude
 
-import AGS.Widget (AGSWidgetProps, SelfOrBinding, Widget)
+import Gtk.Widget (Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
+import AGS.Binding (SelfOrBinding)
 import Effect (Effect)
 import Gtk.Button (GtkButtonProps)
 import Gtk.Container (GtkContainerProps)

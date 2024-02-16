@@ -3,7 +3,8 @@ module AGS.Widget.CircularProgress
   , circularProgress
   ) where
 
-import AGS.Widget (AGSWidgetProps, Widget)
+import Gtk.Widget (Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Gtk.Container (GtkContainerProps)
 import Prelude ((<<<))
 import Prim.Row (class Union)

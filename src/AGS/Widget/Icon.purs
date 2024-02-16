@@ -3,7 +3,8 @@ module AGS.Widget.Icon
   , icon
   ) where
 
-import AGS.Widget (AGSWidgetProps, Widget)
+import Gtk.Widget (Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Gtk.Image (GtkImageProps)
 import Gtk.Misc (GtkMiscProps)
 import Prelude ((<<<))

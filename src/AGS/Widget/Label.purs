@@ -3,7 +3,8 @@ module AGS.Widget.Label
   , label
   ) where
 
-import AGS.Widget (AGSWidgetProps, Widget)
+import Gtk.Widget (Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Gtk.Label (GtkLabelProps)
 import Prelude ((<<<))
 import Prim.Row (class Union)

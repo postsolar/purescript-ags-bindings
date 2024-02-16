@@ -1,6 +1,7 @@
 module Gtk.Button where
 
-import AGS.Widget (SelfOrBinding, Widget)
+import AGS.Binding (SelfOrBinding)
+import Gtk.Widget (Widget)
 
 -- https://gjs-docs.gnome.org/gtk30~3.0/gtk.button
 -- Inherited: GObject.Object (1), Gtk.Widget (69), Gtk.Container (4)

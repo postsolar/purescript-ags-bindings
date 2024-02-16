@@ -5,9 +5,10 @@ module AGS.Widget.Scrollable
 
 import Prelude
 
-import AGS.Widget (AGSWidgetProps, Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Gtk.Container (GtkContainerProps)
 import Gtk.ScrolledWindow (GtkScrolledWindowProps)
+import Gtk.Widget (Widget)
 import Prim.Row (class Union)
 import Type.Row (type (+))
 import Unsafe.Coerce (unsafeCoerce)

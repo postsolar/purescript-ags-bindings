@@ -5,7 +5,8 @@ module AGS.Widget.Entry
 
 import Prelude
 
-import AGS.Widget (AGSWidgetProps, Widget)
+import Gtk.Widget (Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Effect.Uncurried (EffectFn1)
 import Gtk.Entry (GtkEntryProps)
 import Prim.Row (class Union)

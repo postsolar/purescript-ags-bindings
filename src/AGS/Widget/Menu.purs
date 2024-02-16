@@ -6,7 +6,8 @@ module AGS.Widget.Menu
 
 import AGS.Widget.Menu.Item
 
-import AGS.Widget (AGSWidgetProps, Widget)
+import Gtk.Widget (Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1)
 import Gtk.Container (GtkContainerProps)

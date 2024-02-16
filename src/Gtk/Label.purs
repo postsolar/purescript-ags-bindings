@@ -1,6 +1,7 @@
 module Gtk.Label where
 
-import AGS.Widget (SelfOrBinding, Widget)
+import AGS.Binding (SelfOrBinding)
+import Gtk.Widget (Widget)
 
 -- https://gjs-docs.gnome.org/gtk30~3.0/gtk.label
 -- Inherited: Gtk.Widget (39), Gtk.Misc (4)

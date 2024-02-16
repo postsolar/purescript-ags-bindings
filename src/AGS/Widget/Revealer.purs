@@ -4,7 +4,8 @@ module AGS.Widget.Revealer
   , module Gtk.RevealerTransition
   ) where
 
-import AGS.Widget (AGSWidgetProps, Widget)
+import Gtk.Widget (Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Control.Category ((<<<))
 import Gtk.Container (GtkContainerProps)
 import Gtk.Revealer (GtkRevealerProps)
