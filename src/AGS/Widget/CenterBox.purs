@@ -3,8 +3,9 @@ module AGS.Widget.CenterBox
   , centerBox
   ) where
 
-import AGS.Widget (SelfOrBinding, Widget)
+import AGS.Binding (SelfOrBinding)
 import AGS.Widget.Box (BoxProps)
+import Gtk.Widget (Widget)
 import Prelude ((<<<))
 import Prim.Row (class Union)
 import Unsafe.Coerce (unsafeCoerce)

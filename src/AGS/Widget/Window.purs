@@ -2,11 +2,12 @@ module AGS.Widget.Window (WindowProps, Window, window) where
 
 import Prelude
 
-import AGS.Widget (SelfOrBinding, Widget)
+import AGS.Binding (SelfOrBinding)
 import AGS.Widget.Window.Anchor as Anchor
 import AGS.Widget.Window.Exclusivity as Exclusivity
 import AGS.Widget.Window.Layer as WindowLayer
 import Effect (Effect)
+import Gtk.Widget (Widget)
 import Prim.Row (class Union)
 import Unsafe.Coerce (unsafeCoerce)
 

@@ -11,13 +11,14 @@ module AGS.Widget.Slider
 
 import Prelude
 
-import AGS.Widget (AGSWidgetProps, Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Data.Maybe (Maybe, maybe)
 import Effect (Effect)
 import Effect.Uncurried (mkEffectFn1)
 import Gtk.Orientable (GtkOrientableProps)
 import Gtk.Range (GtkRangeProps)
 import Gtk.Scale (GtkScaleProps)
+import Gtk.Widget (Widget)
 import Prim.Row (class Union)
 import Record.Unsafe as RU
 import Type.Row (type (+))

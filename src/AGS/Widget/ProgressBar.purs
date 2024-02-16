@@ -3,9 +3,10 @@ module AGS.Widget.ProgressBar
   , progressBar
   ) where
 
-import AGS.Widget (AGSWidgetProps, Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Gtk.Orientable (GtkOrientableProps)
 import Gtk.ProgressBar (GtkProgressBarProps)
+import Gtk.Widget (Widget)
 import Prelude ((<<<))
 import Prim.Row (class Union)
 import Type.Row (type (+))

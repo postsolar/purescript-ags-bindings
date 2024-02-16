@@ -1,6 +1,7 @@
 module Gtk.Container where
 
-import AGS.Widget (SelfOrBinding, Widget)
+import AGS.Binding (SelfOrBinding)
+import Gtk.Widget (Widget)
 
 -- https://gjs-docs.gnome.org/gtk30~3.0/gtk.container
 -- Inherited: Gtk.Widget (39)

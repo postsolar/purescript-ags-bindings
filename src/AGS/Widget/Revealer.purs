@@ -4,11 +4,12 @@ module AGS.Widget.Revealer
   , module Gtk.RevealerTransition
   ) where
 
-import AGS.Widget (AGSWidgetProps, Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Control.Category ((<<<))
 import Gtk.Container (GtkContainerProps)
 import Gtk.Revealer (GtkRevealerProps)
 import Gtk.RevealerTransition (GtkRevealerTransitionType, transitions)
+import Gtk.Widget (Widget)
 import Prim.Row (class Union)
 import Type.Row (type (+))
 import Unsafe.Coerce (unsafeCoerce)

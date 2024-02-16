@@ -5,9 +5,10 @@ module AGS.Widget.EventBox
 
 import Prelude
 
-import AGS.Widget (AGSWidgetProps, Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Effect (Effect)
 import Gtk.Container (GtkContainerProps)
+import Gtk.Widget (Widget)
 import Prim.Row (class Union)
 import Type.Row (type (+))
 import Unsafe.Coerce (unsafeCoerce)

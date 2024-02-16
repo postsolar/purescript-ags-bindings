@@ -3,10 +3,12 @@ module AGS.Widget.Box
   , box
   ) where
 
-import AGS.Widget (AGSWidgetProps, SelfOrBinding, Widget)
+import AGS.Binding (SelfOrBinding)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Gtk.Box (GtkBoxProps)
 import Gtk.Container (GtkContainerProps)
 import Gtk.Orientable (GtkOrientableProps)
+import Gtk.Widget (Widget)
 import Prelude ((<<<))
 import Prim.Row (class Union)
 import Type.Row (type (+))

@@ -5,9 +5,10 @@ module AGS.Widget.Entry
 
 import Prelude
 
-import AGS.Widget (AGSWidgetProps, Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Effect.Uncurried (EffectFn1)
 import Gtk.Entry (GtkEntryProps)
+import Gtk.Widget (Widget)
 import Prim.Row (class Union)
 import Type.Row (type (+))
 import Unsafe.Coerce (unsafeCoerce)

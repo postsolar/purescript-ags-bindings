@@ -3,10 +3,11 @@ module AGS.Widget.Stack
   , stack
   ) where
 
-import AGS.Widget (AGSWidgetProps, Widget)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Foreign.Object (Object)
 import Gtk.Container (GtkContainerProps)
 import Gtk.Stack (GtkStackProps)
+import Gtk.Widget (Widget)
 import Prelude ((<<<))
 import Prim.Row (class Union)
 import Type.Row (type (+))
