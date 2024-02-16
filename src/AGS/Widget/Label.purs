@@ -3,9 +3,9 @@ module AGS.Widget.Label
   , label
   ) where
 
-import Gtk.Widget (Widget)
 import AGS.Widget.Internal (AGSWidgetProps)
 import Gtk.Label (GtkLabelProps)
+import Gtk.Widget (Widget)
 import Prelude ((<<<))
 import Prim.Row (class Union)
 import Type.Row (type (+))

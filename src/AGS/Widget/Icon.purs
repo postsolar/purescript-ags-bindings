@@ -3,10 +3,10 @@ module AGS.Widget.Icon
   , icon
   ) where
 
-import Gtk.Widget (Widget)
 import AGS.Widget.Internal (AGSWidgetProps)
 import Gtk.Image (GtkImageProps)
 import Gtk.Misc (GtkMiscProps)
+import Gtk.Widget (Widget)
 import Prelude ((<<<))
 import Prim.Row (class Union)
 import Type.Row (type (+))

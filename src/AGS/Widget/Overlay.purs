@@ -3,8 +3,8 @@ module AGS.Widget.Overlay
   , overlay
   ) where
 
-import Gtk.Widget (Widget)
 import AGS.Widget.Internal (AGSWidgetProps)
+import Gtk.Widget (Widget)
 import Prelude ((<<<))
 import Prim.Row (class Union)
 import Type.Row (type (+))

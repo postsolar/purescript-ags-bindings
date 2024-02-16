@@ -6,7 +6,6 @@ module AGS.Widget.Menu
 
 import AGS.Widget.Menu.Item
 
-import Gtk.Widget (Widget)
 import AGS.Widget.Internal (AGSWidgetProps)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1)
@@ -14,6 +13,7 @@ import Gtk.Container (GtkContainerProps)
 import Gtk.Menu (GtkMenuProps)
 import Gtk.MenuShell (GtkMenuShellProps)
 import Gtk.ScrollType (GtkScrollType)
+import Gtk.Widget (Widget)
 import Prelude (Unit, (<<<))
 import Prim.Row (class Union)
 import Type.Row (type (+))

@@ -2,12 +2,12 @@ module AGS.Widget.Button where
 
 import Prelude
 
-import Gtk.Widget (Widget)
-import AGS.Widget.Internal (AGSWidgetProps)
 import AGS.Binding (SelfOrBinding)
+import AGS.Widget.Internal (AGSWidgetProps)
 import Effect (Effect)
 import Gtk.Button (GtkButtonProps)
 import Gtk.Container (GtkContainerProps)
+import Gtk.Widget (Widget)
 import Prim.Row (class Union)
 import Type.Row (type (+))
 import Unsafe.Coerce (unsafeCoerce)
