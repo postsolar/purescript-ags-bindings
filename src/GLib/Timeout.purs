@@ -1,10 +1,13 @@
-module GLib.Timeout (timeoutAdd) where
+module GLib.Timeout
+  ( timeoutAdd
+  , module GLib.Source
+  ) where
 
 import Data.Time.Duration (Milliseconds)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn3, runEffectFn3)
 import GLib.Priority (Priority)
-import GLib.Source (SourceID)
+import GLib.Source (SourceID, sourceRemove)
 
 -- | Add a timer which will execute an effect as long as
 -- | this effect does not return `false`. The timer can be

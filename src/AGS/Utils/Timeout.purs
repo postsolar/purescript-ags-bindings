@@ -1,6 +1,7 @@
 module AGS.Utils.Timeout
   ( interval
   , timeout
+  , module GLib.Source
   ) where
 
 import Prelude
@@ -10,7 +11,7 @@ import Data.Time.Duration (Milliseconds)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn3, runEffectFn3)
 import GLib.Priority (default)
-import GLib.Source (SourceID)
+import GLib.Source (SourceID, sourceRemove)
 import GLib.Timeout (timeoutAdd)
 import Gtk.Widget (Widget)
 import Untagged.Union (UndefinedOr, maybeToUor)
