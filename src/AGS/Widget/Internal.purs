@@ -3,14 +3,12 @@ module AGS.Widget.Internal
   , AnyF
   , Any
   , mkAny
-  , grabFocus
-  , withInterval
   , unsafeWidgetUpdate
   ) where
 
 import Prelude
 
-import AGS.Binding (SelfOrBinding)
+import AGS.Binding (ValueOrBinding)
 import Data.Exists (Exists, mkExists)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1)
@@ -23,7 +21,7 @@ type AGSWidgetProps r =
   GtkWidgetProps
     +
       ( setup ∷ EffectFn1 Widget Unit
-      , className ∷ SelfOrBinding String
+      , className ∷ ValueOrBinding String
       , classNames ∷ Array String
       , css ∷ String
       , hpack ∷ String {- TODO make it a proper type -}
@@ -40,12 +38,6 @@ type Any = Exists AnyF
 -- TODO move out of the internal module
 mkAny ∷ ∀ a. a → Any
 mkAny = mkExists <<< AnyF
-
--- * Methods
-
--- TODO move out of the internal module
-foreign import grabFocus ∷ Widget → Effect Unit
-foreign import withInterval ∷ Int → Effect Unit → Widget → Effect Unit
 
 -- * Utils for widgets updates
 

@@ -1,6 +1,6 @@
 module Gtk.Label where
 
-import AGS.Binding (SelfOrBinding)
+import AGS.Binding (ValueOrBinding)
 import Gtk.Widget (Widget)
 
 -- https://gjs-docs.gnome.org/gtk30~3.0/gtk.label
@@ -11,11 +11,11 @@ type GtkLabelProps r =
   , cursorPosition ∷ Number
   -- , ellipsize ∷ Pango.EllipsizeMode
   -- , justify ∷ Gtk.Justification
-  , label ∷ SelfOrBinding String
+  , label ∷ ValueOrBinding String
   , lines ∷ Number
   , maxWidthChars ∷ Number
   , mnemonicKeyval ∷ Number
-  , mnemonicWidget ∷ SelfOrBinding Widget
+  , mnemonicWidget ∷ ValueOrBinding Widget
   , pattern ∷ String
   , selectable ∷ Boolean
   , selectionBound ∷ Number

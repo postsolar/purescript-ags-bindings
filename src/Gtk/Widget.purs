@@ -1,48 +1,48 @@
 module Gtk.Widget where
 
-import AGS.Binding (SelfOrBinding)
+import AGS.Binding (ValueOrBinding)
 
 data Widget
 
 type GtkWidgetProps r =
-  ( appPaintable ∷ SelfOrBinding Boolean
-  , canDefault ∷ SelfOrBinding Boolean
-  , canFocus ∷ SelfOrBinding Boolean
-  , compositeChild ∷ SelfOrBinding Boolean
-  , doubleBuffered ∷ SelfOrBinding Boolean
+  ( appPaintable ∷ ValueOrBinding Boolean
+  , canDefault ∷ ValueOrBinding Boolean
+  , canFocus ∷ ValueOrBinding Boolean
+  , compositeChild ∷ ValueOrBinding Boolean
+  , doubleBuffered ∷ ValueOrBinding Boolean
   -- , events ∷ Gdk.EventMask
-  , expand ∷ SelfOrBinding Boolean
-  , focusOnClick ∷ SelfOrBinding Boolean
+  , expand ∷ ValueOrBinding Boolean
+  , focusOnClick ∷ ValueOrBinding Boolean
   -- , halign ∷ Gtk.Align
-  , hasDefault ∷ SelfOrBinding Boolean
-  , hasFocus ∷ SelfOrBinding Boolean
-  , hasTooltip ∷ SelfOrBinding Boolean
-  , heightRequest ∷ SelfOrBinding Number
-  , hexpand ∷ SelfOrBinding Boolean
-  , hexpandSet ∷ SelfOrBinding Boolean
-  , isFocus ∷ SelfOrBinding Boolean
-  , margin ∷ SelfOrBinding Number
-  , marginBottom ∷ SelfOrBinding Number
-  , marginEnd ∷ SelfOrBinding Number
-  , marginLeft ∷ SelfOrBinding Number
-  , marginRight ∷ SelfOrBinding Number
-  , marginStart ∷ SelfOrBinding Number
-  , marginTop ∷ SelfOrBinding Number
-  , name ∷ SelfOrBinding String
-  , noShowAll ∷ SelfOrBinding Boolean
-  , opacity ∷ SelfOrBinding Number
+  , hasDefault ∷ ValueOrBinding Boolean
+  , hasFocus ∷ ValueOrBinding Boolean
+  , hasTooltip ∷ ValueOrBinding Boolean
+  , heightRequest ∷ ValueOrBinding Number
+  , hexpand ∷ ValueOrBinding Boolean
+  , hexpandSet ∷ ValueOrBinding Boolean
+  , isFocus ∷ ValueOrBinding Boolean
+  , margin ∷ ValueOrBinding Number
+  , marginBottom ∷ ValueOrBinding Number
+  , marginEnd ∷ ValueOrBinding Number
+  , marginLeft ∷ ValueOrBinding Number
+  , marginRight ∷ ValueOrBinding Number
+  , marginStart ∷ ValueOrBinding Number
+  , marginTop ∷ ValueOrBinding Number
+  , name ∷ ValueOrBinding String
+  , noShowAll ∷ ValueOrBinding Boolean
+  , opacity ∷ ValueOrBinding Number
   -- , parent ∷ Gtk.Container
-  , receivesDefault ∷ SelfOrBinding Boolean
-  , scaleFactor ∷ SelfOrBinding Number
-  , sensitive ∷ SelfOrBinding Boolean
+  , receivesDefault ∷ ValueOrBinding Boolean
+  , scaleFactor ∷ ValueOrBinding Number
+  , sensitive ∷ ValueOrBinding Boolean
   -- , style ∷ Gtk.Style
-  , tooltipMarkup ∷ SelfOrBinding String
-  , tooltipText ∷ SelfOrBinding String
+  , tooltipMarkup ∷ ValueOrBinding String
+  , tooltipText ∷ ValueOrBinding String
   -- , valign ∷ Gtk.Align
-  , vexpand ∷ SelfOrBinding Boolean
-  , vexpandSet ∷ SelfOrBinding Boolean
-  , visible ∷ SelfOrBinding Boolean
-  , widthRequest ∷ SelfOrBinding Number
+  , vexpand ∷ ValueOrBinding Boolean
+  , vexpandSet ∷ ValueOrBinding Boolean
+  , visible ∷ ValueOrBinding Boolean
+  , widthRequest ∷ ValueOrBinding Number
   -- , window ∷ Gdk.Window
   | r
   )

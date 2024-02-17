@@ -2,7 +2,7 @@ module AGS.Widget.Window (WindowProps, Window, window) where
 
 import Prelude
 
-import AGS.Binding (SelfOrBinding)
+import AGS.Binding (ValueOrBinding)
 import AGS.Widget.Window.Anchor as Anchor
 import AGS.Widget.Window.Exclusivity as Exclusivity
 import AGS.Widget.Window.Layer as WindowLayer
@@ -13,7 +13,7 @@ import Unsafe.Coerce (unsafeCoerce)
 
 type WindowProps =
   ( name ∷ String
-  , child ∷ SelfOrBinding Widget
+  , child ∷ ValueOrBinding Widget
   , anchor ∷ Array Anchor.Anchor
   , layer ∷ WindowLayer.WindowLayer
   , exclusivity ∷ Exclusivity.Exclusivity

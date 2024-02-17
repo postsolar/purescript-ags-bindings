@@ -1,8 +1,10 @@
 module AGS.Widget.Slider
   ( SliderProps
+  , UpdateSliderProps
   , Mark
   , MarkPosition
   , slider
+  , slider'
   , markPositionTop
   , markPositionLeft
   , markPositionRight
@@ -11,8 +13,9 @@ module AGS.Widget.Slider
 
 import Prelude
 
-import AGS.Widget.Internal (AGSWidgetProps)
+import AGS.Widget.Internal (AGSWidgetProps, unsafeWidgetUpdate)
 import Data.Maybe (Maybe, maybe)
+import Data.Tuple.Nested (type (/\), (/\))
 import Effect (Effect)
 import Effect.Uncurried (mkEffectFn1)
 import Gtk.Orientable (GtkOrientableProps)
@@ -76,4 +79,18 @@ slider = sliderImpl <<< prepare
     [ at ] <> maybe [] unsafeCoerce label <> maybe [] unsafeCoerce position
 
 foreign import sliderImpl ∷ ∀ r. Record r → Widget
+
+type UpdateSliderProps = Record (SliderProps ()) → Record (SliderProps ())
+
+slider'
+  ∷ ∀ r r'
+  . Union r r' (SliderProps ())
+  ⇒ Record r
+  → Widget /\ (UpdateSliderProps → Effect Unit)
+slider' props =
+  let
+    widget = slider props
+    update = unsafeWidgetUpdate @(SliderProps ()) widget
+  in
+    widget /\ update
 
