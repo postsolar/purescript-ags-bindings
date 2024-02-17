@@ -1,7 +1,7 @@
 module AGS.Widget (module Exports) where
 
 import AGS.Binding (Binding, SelfOrBinding, bindProp) as Exports
-import AGS.Widget.Box (BoxProps, box) as Exports
+import AGS.Widget.Box (BoxProps, box, box') as Exports
 import AGS.Widget.Button (ButtonProps, button, buttonImpl) as Exports
 import AGS.Widget.CenterBox (CenterBoxProps, centerBox) as Exports
 import AGS.Widget.CircularProgress (CircularProgressProps, circularProgress) as Exports
@@ -14,10 +14,9 @@ import AGS.Widget.Internal
   , AnyF
   , grabFocus
   , mkAny
-  , unsafeSetProperty
   , withInterval
   ) as Exports
-import AGS.Widget.Label (LabelProps, label) as Exports
+import AGS.Widget.Label (LabelProps, label, label') as Exports
 import AGS.Widget.Menu (MenuProps, menu) as Exports
 import AGS.Widget.Menu.Item (MenuItem, MenuItemProps, menuItem, menuItemImpl) as Exports
 import AGS.Widget.Overlay (OverlayProps, overlay) as Exports
