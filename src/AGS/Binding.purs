@@ -1,32 +1,26 @@
 module AGS.Binding
   ( Binding
-  , SelfOrBinding
   , class BindProp
   , bindProp
   , unsafeBindProp
+  , ValueOrBinding
+  , overValue
+  , overBinding
+  , overBoth
   ) where
 
 import Prelude
 
 import Control.Apply (lift2)
+import Data.Either (either)
 import Data.Symbol (class IsSymbol, reflectSymbol)
 import Type.Proxy (Proxy(..))
-import Untagged.Union (OneOf)
+import Untagged.TypeCheck (class HasRuntimeType)
+import Untagged.Union (OneOf, asOneOf, toEither1)
 
 foreign import data Binding ∷ Type → Type
 
 type role Binding representational
-
-type SelfOrBinding a = OneOf a (Binding a)
-
-class BindProp ∷ ∀ k. Type → k → Type → Constraint
-class BindProp o p t | o p → t where
-  bindProp ∷ o → Binding t
-
-unsafeBindProp ∷ ∀ @p @o @t. IsSymbol p ⇒ BindProp o p t ⇒ o → Binding t
-unsafeBindProp = unsafeBindPropImpl (reflectSymbol (Proxy @p))
-
-foreign import unsafeBindPropImpl ∷ ∀ o t. String → o → Binding t
 
 -- | Transform the value streamed in a `Binding`.
 instance Functor Binding where
@@ -61,4 +55,47 @@ foreign import transform ∷ ∀ a b. (a → b) → Binding a → Binding b
 foreign import applyBinding ∷ ∀ a b. Binding (a → b) → Binding a → Binding b
 foreign import pureBinding ∷ ∀ a. a → Binding a
 foreign import bindBinding ∷ ∀ a b. Binding a → (a → Binding b) → Binding b
+
+class BindProp ∷ ∀ k. Type → k → Type → Constraint
+class BindProp o p t | o p → t where
+  bindProp ∷ o → Binding t
+
+unsafeBindProp ∷ ∀ @p @o @t. IsSymbol p ⇒ BindProp o p t ⇒ o → Binding t
+unsafeBindProp = unsafeBindPropImpl (reflectSymbol (Proxy @p))
+
+foreign import unsafeBindPropImpl ∷ ∀ o t. String → o → Binding t
+
+-- * ValueOrBinding
+
+type ValueOrBinding a = OneOf a (Binding a)
+
+-- | Transform a *value* inside a `ValueOrBinding`.
+-- | If `ValueOrBinding` is a binding, it stays unmodified.
+overValue
+  ∷ ∀ a
+  . HasRuntimeType a
+  ⇒ (a → a)
+  → ValueOrBinding a
+  → ValueOrBinding a
+overValue = flip overBoth identity
+
+-- | Transform a *binding* inside a `ValueOrBinding`.
+-- | If `ValueOrBinding` is a plain value, it stays unmodified.
+overBinding
+  ∷ ∀ a
+  . HasRuntimeType a
+  ⇒ (Binding a → Binding a)
+  → ValueOrBinding a
+  → ValueOrBinding a
+overBinding = overBoth identity
+
+-- | Transform both a plain value and a binding in `ValueOrBinding`.
+overBoth
+  ∷ ∀ a b
+  . HasRuntimeType a
+  ⇒ (a → b)
+  → (Binding a → Binding b)
+  → ValueOrBinding a
+  → ValueOrBinding b
+overBoth f g sob = either (asOneOf <<< f) (asOneOf <<< g) $ toEither1 sob
 

@@ -1,11 +1,14 @@
 module AGS.Widget.EventBox
   ( EventBoxProps
+  , UpdateEventBoxProps
   , eventBox
+  , eventBox'
   ) where
 
 import Prelude
 
-import AGS.Widget.Internal (AGSWidgetProps)
+import AGS.Widget.Internal (AGSWidgetProps, unsafeWidgetUpdate)
+import Data.Tuple.Nested (type (/\), (/\))
 import Effect (Effect)
 import Gtk.Container (GtkContainerProps)
 import Gtk.Widget (Widget)
@@ -38,4 +41,18 @@ eventBox
 eventBox = eventBoxImpl <<< unsafeCoerce
 
 foreign import eventBoxImpl ∷ Record (EventBoxProps ()) → Widget
+
+type UpdateEventBoxProps = Record (EventBoxProps ()) → Record (EventBoxProps ())
+
+eventBox'
+  ∷ ∀ r r'
+  . Union r r' (EventBoxProps ())
+  ⇒ Record r
+  → Widget /\ (UpdateEventBoxProps → Effect Unit)
+eventBox' props =
+  let
+    widget = eventBox props
+    update = unsafeWidgetUpdate @(EventBoxProps ()) widget
+  in
+    widget /\ update
 

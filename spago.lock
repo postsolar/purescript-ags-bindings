@@ -12,6 +12,7 @@ workspace:
         - nullable
         - prelude
         - record
+        - record-studio
         - untagged-union
         - web-encoding
       test_dependencies: []
@@ -38,6 +39,7 @@ workspace:
         - functions
         - functors
         - gen
+        - heterogeneous
         - identity
         - integers
         - invariant
@@ -59,6 +61,7 @@ workspace:
         - profunctor
         - psci-support
         - record
+        - record-studio
         - refs
         - safe-coerce
         - st
@@ -71,6 +74,7 @@ workspace:
         - unfoldable
         - unsafe-coerce
         - untagged-union
+        - variant
         - web-encoding
   package_set:
     address:
@@ -812,6 +816,17 @@ packages:
       - tailrec
       - tuples
       - unfoldable
+  heterogeneous:
+    type: registry
+    version: 0.6.0
+    integrity: sha256-cfNYSK6yYmjTrkzk95Otpv6TUUkeBreexwqG/tBvUyg=
+    dependencies:
+      - either
+      - functors
+      - prelude
+      - record
+      - tuples
+      - variant
   identity:
     type: registry
     version: 6.0.0
@@ -1013,6 +1028,16 @@ packages:
       - functions
       - prelude
       - unsafe-coerce
+  record-studio:
+    type: registry
+    version: 1.0.4
+    integrity: sha256-9v6qpUrGa17Im/F/vWODjKlmD3ZuUXYIKCpz5OI9seM=
+    dependencies:
+      - heterogeneous
+      - lists
+      - prelude
+      - record
+      - typelevel-prelude
   refs:
     type: registry
     version: 6.0.0
@@ -1137,6 +1162,19 @@ packages:
       - maybe
       - newtype
       - psci-support
+      - tuples
+      - unsafe-coerce
+  variant:
+    type: registry
+    version: 8.0.0
+    integrity: sha256-SR//zQDg2dnbB8ZHslcxieUkCeNlbMToapvmh9onTtw=
+    dependencies:
+      - enums
+      - lists
+      - maybe
+      - partial
+      - prelude
+      - record
       - tuples
       - unsafe-coerce
   web-encoding:

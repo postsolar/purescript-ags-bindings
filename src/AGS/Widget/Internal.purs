@@ -3,25 +3,25 @@ module AGS.Widget.Internal
   , AnyF
   , Any
   , mkAny
-  , unsafeSetProperty
-  , grabFocus
-  , withInterval
+  , unsafeWidgetUpdate
   ) where
 
 import Prelude
 
-import AGS.Binding (SelfOrBinding)
+import AGS.Binding (ValueOrBinding)
 import Data.Exists (Exists, mkExists)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1)
 import Gtk.Widget (GtkWidgetProps, Widget)
+import Record.Studio.Keys (class Keys, keys)
+import Type.Proxy (Proxy(..))
 import Type.Row (type (+))
 
 type AGSWidgetProps r =
   GtkWidgetProps
     +
       ( setup ∷ EffectFn1 Widget Unit
-      , className ∷ SelfOrBinding String
+      , className ∷ ValueOrBinding String
       , classNames ∷ Array String
       , css ∷ String
       , hpack ∷ String {- TODO make it a proper type -}
@@ -35,14 +35,27 @@ newtype AnyF a = AnyF a
 
 type Any = Exists AnyF
 
+-- TODO move out of the internal module
 mkAny ∷ ∀ a. a → Any
 mkAny = mkExists <<< AnyF
 
--- * Methods
+-- * Utils for widgets updates
 
-foreign import unsafeSetProperty ∷ ∀ a. String → a → Widget → Effect Unit
+unsafeWidgetUpdate
+  ∷ ∀ @r
+  . Keys r
+  ⇒ Widget
+  → ((Record r → Record r) → Effect Unit)
+unsafeWidgetUpdate widget =
+  let
+    getProps = unsafeGetWidgetProps @r
+    update f = unsafeUpdateWidgetProps (f (getProps widget)) widget
+  in
+    update
 
-foreign import grabFocus ∷ Widget → Effect Unit
+unsafeGetWidgetProps ∷ ∀ @r. Keys r ⇒ Widget → Record r
+unsafeGetWidgetProps = unsafeGetwidgetPropsImpl (keys (Proxy @r))
 
-foreign import withInterval ∷ Int → Effect Unit → Widget → Effect Unit
+foreign import unsafeGetwidgetPropsImpl ∷ ∀ r. Array String → Widget → Record r
+foreign import unsafeUpdateWidgetProps ∷ ∀ r. Record r → Widget → Effect Unit
 
