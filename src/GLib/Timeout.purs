@@ -18,8 +18,5 @@ foreign import timeoutAddImpl
       Priority
       Milliseconds
       (Effect Boolean)
-      -- TODO should be newtyped, I don't know which
-      -- type GLib themselves reference though.
-      -- They just call it "number".
       SourceID
 
