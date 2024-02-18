@@ -150,6 +150,9 @@ appEntry currQuery app =
     filterEntry s =
       Applications.matchAppName s app
 
+    -- `Binding` has a Functor, Apply, Applicative and Monad instances,
+    -- as well as Semigroup and Monoid. We can use `map` to directly
+    -- transform the binding.
     visible ∷ Binding Boolean
     visible = filterEntry <$> currQuery
 
@@ -159,9 +162,6 @@ appEntry currQuery app =
       , onClicked: do
           Applications.launchApp app
           App.quit
-      -- `Binding` has a Functor, Apply, Applicative and Monad instances,
-      -- as well as Semigroup and Monoid. We can use `map` to directly
-      -- transform the binding.
       , visible: asOneOf visible
       }
 

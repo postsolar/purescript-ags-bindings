@@ -19,5 +19,5 @@ Dependencies for running this project consist of:
 
 ### Building
 
-See building instructions in the parent directory's `README.md`
+See building instructions in the parent directory's [README.md](../README.md).
 

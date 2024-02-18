@@ -4,5 +4,5 @@ The launcher uses the default GTK theme with no extra styling and includes app i
 
 ## Building
 
-See building instructions in the parent directory's [README.md](../README.md)
+See building instructions in the parent directory's [README.md](../README.md).
 
