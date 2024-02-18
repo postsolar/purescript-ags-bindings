@@ -45,8 +45,7 @@ export default { windows: main().windows }
 #### 2. Compile and bundle the project
 
 ```shell
-> spago build
-> purs-backend-es bundle-module -m '<entrypoint module>'
+> spago bundle --bundle-type module --bundler-args '--external:gi://*' --module '<entrypoint module>'
 ```
 
 #### 3. Run AGS

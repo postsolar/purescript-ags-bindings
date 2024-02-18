@@ -6,7 +6,7 @@ A sample entrypoint JS file is provided for reference as well.
 
 ```shell
 cd <project-name>
-spago build && purs-backend-es bundle-module
+spago bundle --bundle-type module --bundler-args '--external:gi://*'
 ags -c ./entrypoint.js
 ```
 
