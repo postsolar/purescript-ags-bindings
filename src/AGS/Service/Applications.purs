@@ -52,7 +52,7 @@ fromApplication = unsafeCoerce
 
 foreign import launchApp ∷ Application → Effect Unit
 
-foreign import matchAppName ∷ String → Application → Effect Boolean
+foreign import matchAppName ∷ String → Application → Boolean
 
 foreign import reloadDesktopInfo ∷ Application → Effect Unit
 

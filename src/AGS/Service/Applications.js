@@ -17,7 +17,7 @@ export const launchApp =
     app.launch()
 
 export const matchAppName =
-  q => app => () =>
+  q => app =>
     app.match(q)
 
 export const reloadDesktopInfo =
