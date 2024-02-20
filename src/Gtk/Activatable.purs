@@ -1,8 +1,10 @@
 module Gtk.Activatable where
 
+import AGS.Binding (ValueOrBinding)
+
 type GtkActivatableProps r =
   ( -- relatedAction ∷ Gtk.Action
-    useActionAppearance ∷ Boolean
+    useActionAppearance ∷ ValueOrBinding Boolean
   | r
   )
 

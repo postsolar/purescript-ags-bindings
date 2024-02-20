@@ -1,6 +1,5 @@
 module AGS.Widget.Revealer
   ( RevealerProps
-  , UpdateRevealerProps
   , revealer
   , revealer'
   , module Gtk.RevealerTransition
@@ -8,14 +7,16 @@ module AGS.Widget.Revealer
 
 import Prelude
 
-import AGS.Widget.Internal (AGSWidgetProps, unsafeWidgetUpdate)
-import Data.Tuple.Nested (type (/\), (/\))
-import Effect (Effect)
+import AGS.Widget.Internal
+  ( AGSWidgetProps
+  , MkWidget
+  , MkWidgetWithUpdates
+  , mkWidgetWithUpdates
+  )
 import Gtk.Container (GtkContainerProps)
 import Gtk.Revealer (GtkRevealerProps)
 import Gtk.RevealerTransition (GtkRevealerTransitionType, transitions)
 import Gtk.Widget (Widget)
-import Prim.Row (class Union)
 import Type.Row (type (+))
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -25,22 +26,11 @@ type RevealerProps r =
     + GtkRevealerProps
     + r
 
-revealer ∷ ∀ r r'. Union r r' (RevealerProps ()) ⇒ Record r → Widget
+revealer ∷ MkWidget (RevealerProps ())
 revealer = revealerImpl <<< unsafeCoerce
 
+revealer' ∷ MkWidgetWithUpdates (RevealerProps ())
+revealer' = mkWidgetWithUpdates revealer
+
 foreign import revealerImpl ∷ ∀ r. Record r → Widget
-
-type UpdateRevealerProps = Record (RevealerProps ()) → Record (RevealerProps ())
-
-revealer'
-  ∷ ∀ r r'
-  . Union r r' (RevealerProps ())
-  ⇒ Record r
-  → Widget /\ (UpdateRevealerProps → Effect Unit)
-revealer' props =
-  let
-    widget = revealer props
-    update = unsafeWidgetUpdate @(RevealerProps ()) widget
-  in
-    widget /\ update
 

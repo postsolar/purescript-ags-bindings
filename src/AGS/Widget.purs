@@ -13,64 +13,35 @@ import AGS.Binding
   , overBoth
   , overValue
   ) as Exports
-import AGS.Widget.Box (BoxProps, UpdateBoxProps, box, box') as Exports
-import AGS.Widget.Button (ButtonProps, UpdateButtonProps, button, button') as Exports
-import AGS.Widget.CenterBox
-  ( CenterBoxProps
-  , UpdateCenterBoxProps
-  , centerBox
-  , centerBox'
-  ) as Exports
+import AGS.Widget.Box (BoxProps, box, box') as Exports
+import AGS.Widget.Button (ButtonProps, button, button') as Exports
+import AGS.Widget.CenterBox (CenterBoxProps, centerBox, centerBox') as Exports
 import AGS.Widget.CircularProgress
   ( CircularProgressProps
-  , UpdateCircularProgressProps
   , circularProgress
   , circularProgress'
   ) as Exports
-import AGS.Widget.Entry (EntryProps, UpdateEntryProps, entry, entry') as Exports
-import AGS.Widget.EventBox
-  ( EventBoxProps
-  , UpdateEventBoxProps
-  , eventBox
-  , eventBox'
-  ) as Exports
-import AGS.Widget.Icon (IconProps, UpdateIconProps, icon, icon') as Exports
-import AGS.Widget.Internal
-  ( AGSWidgetProps
-  , Any
-  , AnyF
-  , mkAny
-  , unsafeWidgetUpdate
-  ) as Exports
+import AGS.Widget.Entry (EntryProps, entry, entry') as Exports
+import AGS.Widget.EventBox (EventBoxProps, eventBox, eventBox') as Exports
+import AGS.Widget.Icon (IconProps, icon, icon') as Exports
+import AGS.Widget.Internal (AGSWidgetProps, Any, AnyF, mkAny) as Exports
 import AGS.Widget.Label (LabelProps, label, label') as Exports
-import AGS.Widget.Menu (MenuProps, UpdateMenuProps, menu, menu') as Exports
-import AGS.Widget.Menu.Item (MenuItem, MenuItemProps, menuItem, menuItemImpl) as Exports
-import AGS.Widget.Overlay (OverlayProps, UpdateOverlayProps, overlay, overlay') as Exports
-import AGS.Widget.ProgressBar
-  ( ProgressBarProps
-  , UpdateProgressBarProps
-  , progressBar
-  , progressBar'
-  ) as Exports
+import AGS.Widget.Menu (MenuProps, menu, menu') as Exports
+import AGS.Widget.Menu.Item (MenuItemProps, menuItem) as Exports
+import AGS.Widget.Overlay (OverlayProps, overlay, overlay') as Exports
+import AGS.Widget.ProgressBar (ProgressBarProps, progressBar, progressBar') as Exports
 import AGS.Widget.Revealer
   ( GtkRevealerTransitionType
   , RevealerProps
-  , UpdateRevealerProps
   , revealer
   , revealer'
   , transitions
   ) as Exports
-import AGS.Widget.Scrollable
-  ( ScrollableProps
-  , UpdateScrollableProps
-  , scrollable
-  , scrollable'
-  ) as Exports
+import AGS.Widget.Scrollable (ScrollableProps, scrollable, scrollable') as Exports
 import AGS.Widget.Slider
   ( Mark
   , MarkPosition
   , SliderProps
-  , UpdateSliderProps
   , markPositionBottom
   , markPositionLeft
   , markPositionRight

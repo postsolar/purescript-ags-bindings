@@ -1,6 +1,5 @@
 module AGS.Widget.Slider
   ( SliderProps
-  , UpdateSliderProps
   , Mark
   , MarkPosition
   , slider
@@ -13,16 +12,21 @@ module AGS.Widget.Slider
 
 import Prelude
 
-import AGS.Widget.Internal (AGSWidgetProps, unsafeWidgetUpdate)
+import AGS.Binding (ValueOrBinding)
+import AGS.Widget.Internal
+  ( AGSWidgetProps
+  , MkWidget
+  , MkWidgetWithUpdates
+  , mkWidgetWithUpdates
+  , propsToValueOrBindings
+  )
 import Data.Maybe (Maybe, maybe)
-import Data.Tuple.Nested (type (/\), (/\))
 import Effect (Effect)
 import Effect.Uncurried (mkEffectFn1)
 import Gtk.Orientable (GtkOrientableProps)
 import Gtk.Range (GtkRangeProps)
 import Gtk.Scale (GtkScaleProps)
 import Gtk.Widget (Widget)
-import Prim.Row (class Union)
 import Record.Unsafe as RU
 import Type.Row (type (+))
 import Unsafe.Coerce (unsafeCoerce)
@@ -46,17 +50,17 @@ type SliderProps r =
     + GtkScaleProps
     + GtkRangeProps
     +
-      ( vertical ∷ Boolean
-      , value ∷ Number
-      , min ∷ Number
-      , max ∷ Number
-      , marks ∷ Array Mark
-      , onChange ∷ Number → Effect Unit
+      ( vertical ∷ ValueOrBinding Boolean
+      , value ∷ ValueOrBinding Number
+      , min ∷ ValueOrBinding Number
+      , max ∷ ValueOrBinding Number
+      , marks ∷ ValueOrBinding (Array Mark)
+      , onChange ∷ ValueOrBinding (Number → Effect Unit)
       | r
       )
 
-slider ∷ ∀ r r'. Union r r' (SliderProps ()) ⇒ Record r → Widget
-slider = sliderImpl <<< prepare
+slider ∷ MkWidget (SliderProps ())
+slider = sliderImpl <<< prepare <<< propsToValueOrBindings @(SliderProps ())
   where
   prepare r =
     r
@@ -78,19 +82,8 @@ slider = sliderImpl <<< prepare
   prepareMark { at, label, position } =
     [ at ] <> maybe [] unsafeCoerce label <> maybe [] unsafeCoerce position
 
+slider' ∷ MkWidgetWithUpdates (SliderProps ())
+slider' = mkWidgetWithUpdates slider
+
 foreign import sliderImpl ∷ ∀ r. Record r → Widget
-
-type UpdateSliderProps = Record (SliderProps ()) → Record (SliderProps ())
-
-slider'
-  ∷ ∀ r r'
-  . Union r r' (SliderProps ())
-  ⇒ Record r
-  → Widget /\ (UpdateSliderProps → Effect Unit)
-slider' props =
-  let
-    widget = slider props
-    update = unsafeWidgetUpdate @(SliderProps ()) widget
-  in
-    widget /\ update
 

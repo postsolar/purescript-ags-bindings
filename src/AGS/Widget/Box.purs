@@ -1,24 +1,19 @@
-module AGS.Widget.Box
-  ( BoxProps
-  , UpdateBoxProps
-  , box
-  , box'
-  ) where
+module AGS.Widget.Box (BoxProps, box, box') where
 
 import Prelude
 
 import AGS.Binding (ValueOrBinding)
 import AGS.Widget.Internal
   ( AGSWidgetProps
-  , unsafeWidgetUpdate
+  , MkWidget
+  , MkWidgetWithUpdates
+  , mkWidgetWithUpdates
+  , propsToValueOrBindings
   )
-import Data.Tuple.Nested (type (/\), (/\))
-import Effect (Effect)
 import Gtk.Box (GtkBoxProps)
 import Gtk.Container (GtkContainerProps)
 import Gtk.Orientable (GtkOrientableProps)
 import Gtk.Widget (Widget)
-import Prim.Row (class Union)
 import Type.Row (type (+))
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -28,27 +23,16 @@ type BoxProps r =
     + GtkOrientableProps
     + GtkBoxProps
     +
-      ( vertical ∷ Boolean
+      ( vertical ∷ ValueOrBinding Boolean
       , children ∷ ValueOrBinding (Array Widget)
       | r
       )
 
-box ∷ ∀ r r'. Union r r' (BoxProps ()) ⇒ Record r → Widget
-box = boxImpl <<< unsafeCoerce
+box ∷ MkWidget (BoxProps ())
+box = boxImpl <<< unsafeCoerce <<< propsToValueOrBindings @(BoxProps ())
+
+box' ∷ MkWidgetWithUpdates (BoxProps ())
+box' = mkWidgetWithUpdates box
 
 foreign import boxImpl ∷ Record (BoxProps ()) → Widget
-
-type UpdateBoxProps = Record (BoxProps ()) → Record (BoxProps ())
-
-box'
-  ∷ ∀ r r'
-  . Union r r' (BoxProps ())
-  ⇒ Record r
-  → Widget /\ (UpdateBoxProps → Effect Unit)
-box' props =
-  let
-    widget = box props
-    update = unsafeWidgetUpdate @(BoxProps ()) widget
-  in
-    widget /\ update
 

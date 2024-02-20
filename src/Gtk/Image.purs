@@ -1,19 +1,21 @@
 module Gtk.Image where
 
+import AGS.Binding (ValueOrBinding)
+
 type GtkImageProps r =
-  ( file ∷ String
-  -- , gicon ∷ Gio.Icon
-  , iconName ∷ String
-  -- , iconSet ∷ Gtk.IconSet
-  , iconSize ∷ Number
-  -- , pixbuf ∷ GdkPixbuf.Pixbuf
-  -- , pixbufAnimation ∷ GdkPixbuf.PixbufAnimation
-  , pixelSize ∷ Number
-  , resource ∷ String
-  , stock ∷ String
-  -- , storageType ∷ Gtk.ImageType
-  -- , surface ∷ Cairo.Surface
-  , useFallback ∷ Boolean
+  ( file ∷ ValueOrBinding String
+  -- , gicon ∷ ValueOrBinding Gio.Icon
+  , iconName ∷ ValueOrBinding String
+  -- , iconSet ∷ ValueOrBinding Gtk.IconSet
+  , iconSize ∷ ValueOrBinding Number
+  -- , pixbuf ∷ ValueOrBinding GdkPixbuf.Pixbuf
+  -- , pixbufAnimation ∷ ValueOrBinding GdkPixbuf.PixbufAnimation
+  , pixelSize ∷ ValueOrBinding Number
+  , resource ∷ ValueOrBinding String
+  , stock ∷ ValueOrBinding String
+  -- , storageType ∷ ValueOrBinding Gtk.ImageType
+  -- , surface ∷ ValueOrBinding Cairo.Surface
+  , useFallback ∷ ValueOrBinding Boolean
   | r
   )
 

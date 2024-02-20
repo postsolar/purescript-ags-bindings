@@ -1,14 +1,16 @@
 module Gtk.Range where
 
+import AGS.Binding (ValueOrBinding)
+
 type GtkRangeProps r =
-  ( -- adjustment ∷ Gtk.Adjustment
-    fillLevel ∷ Number
-  , inverted ∷ Boolean
-  -- , lowerStepperSensitivity ∷ Gtk.SensitivityType
-  , restrictToFillLevel ∷ Boolean
-  , roundDigits ∷ Number
-  , showFillLevel ∷ Boolean
-  -- , upperStepperSensitivity ∷ Gtk.SensitivityType
+  ( -- adjustment ∷ ValueOrBinding Gtk.Adjustment
+    fillLevel ∷ ValueOrBinding Number
+  , inverted ∷ ValueOrBinding Boolean
+  -- , lowerStepperSensitivity ∷ ValueOrBinding Gtk.SensitivityType
+  , restrictToFillLevel ∷ ValueOrBinding Boolean
+  , roundDigits ∷ ValueOrBinding Number
+  , showFillLevel ∷ ValueOrBinding Boolean
+  -- , upperStepperSensitivity ∷ ValueOrBinding Gtk.SensitivityType
   | r
   )
 

@@ -1,19 +1,17 @@
-module AGS.Widget.Entry
-  ( EntryProps
-  , UpdateEntryProps
-  , entry
-  , entry'
-  ) where
+module AGS.Widget.Entry (EntryProps, entry, entry') where
 
 import Prelude
 
-import AGS.Widget.Internal (AGSWidgetProps, unsafeWidgetUpdate)
-import Data.Tuple.Nested (type (/\), (/\))
-import Effect (Effect)
+import AGS.Widget.Internal
+  ( AGSWidgetProps
+  , MkWidget
+  , MkWidgetWithUpdates
+  , mkWidgetWithUpdates
+  , propsToValueOrBindings
+  )
 import Effect.Uncurried (EffectFn1)
 import Gtk.Entry (GtkEntryProps)
 import Gtk.Widget (Widget)
-import Prim.Row (class Union)
 import Type.Row (type (+))
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -26,22 +24,11 @@ type EntryProps r =
       | r
       )
 
-entry ∷ ∀ r r'. Union r r' (EntryProps ()) ⇒ Record r → Widget
-entry = entryImpl <<< unsafeCoerce
+entry ∷ MkWidget (EntryProps ())
+entry = entryImpl <<< unsafeCoerce <<< propsToValueOrBindings @(EntryProps ())
+
+entry' ∷ MkWidgetWithUpdates (EntryProps ())
+entry' = mkWidgetWithUpdates entry
 
 foreign import entryImpl ∷ Record (EntryProps ()) → Widget
-
-type UpdateEntryProps = Record (EntryProps ()) → Record (EntryProps ())
-
-entry'
-  ∷ ∀ r r'
-  . Union r r' (EntryProps ())
-  ⇒ Record r
-  → Widget /\ (UpdateEntryProps → Effect Unit)
-entry' props =
-  let
-    widget = entry props
-    update = unsafeWidgetUpdate @(EntryProps ()) widget
-  in
-    widget /\ update
 

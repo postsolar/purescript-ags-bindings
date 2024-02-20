@@ -1,20 +1,19 @@
-module AGS.Widget.Button
-  ( ButtonProps
-  , UpdateButtonProps
-  , button
-  , button'
-  ) where
+module AGS.Widget.Button (ButtonProps, button, button') where
 
 import Prelude
 
 import AGS.Binding (ValueOrBinding)
-import AGS.Widget.Internal (AGSWidgetProps, unsafeWidgetUpdate)
-import Data.Tuple.Nested (type (/\), (/\))
+import AGS.Widget.Internal
+  ( AGSWidgetProps
+  , MkWidget
+  , MkWidgetWithUpdates
+  , mkWidgetWithUpdates
+  , propsToValueOrBindings
+  )
 import Effect (Effect)
 import Gtk.Button (GtkButtonProps)
 import Gtk.Container (GtkContainerProps)
 import Gtk.Widget (Widget)
-import Prim.Row (class Union)
 import Type.Row (type (+))
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -24,36 +23,27 @@ type ButtonProps r =
     + GtkButtonProps
     +
       ( child ∷ ValueOrBinding Widget
-      , onClicked ∷ Effect Unit
-      , onPrimaryClick ∷ Effect Unit
-      , onSecondaryClick ∷ Effect Unit
-      , onMiddleClick ∷ Effect Unit
-      , onPrimaryClickRelease ∷ Effect Unit
-      , onSecondaryClickRelease ∷ Effect Unit
-      , onMiddleClickRelease ∷ Effect Unit
-      , onHover ∷ Effect Unit
-      , onHoverLost ∷ Effect Unit
-      , onScrollUp ∷ Effect Unit
-      , onScrollDown ∷ Effect Unit
+      , onClicked ∷ ValueOrBinding (Effect Unit)
+      , onPrimaryClick ∷ ValueOrBinding (Effect Unit)
+      , onSecondaryClick ∷ ValueOrBinding (Effect Unit)
+      , onMiddleClick ∷ ValueOrBinding (Effect Unit)
+      , onPrimaryClickRelease ∷ ValueOrBinding (Effect Unit)
+      , onSecondaryClickRelease ∷ ValueOrBinding (Effect Unit)
+      , onMiddleClickRelease ∷ ValueOrBinding (Effect Unit)
+      , onHover ∷ ValueOrBinding (Effect Unit)
+      , onHoverLost ∷ ValueOrBinding (Effect Unit)
+      , onScrollUp ∷ ValueOrBinding (Effect Unit)
+      , onScrollDown ∷ ValueOrBinding (Effect Unit)
       | r
       )
 
-button ∷ ∀ r r'. Union r r' (ButtonProps ()) ⇒ Record r → Widget
-button = buttonImpl <<< unsafeCoerce
+button ∷ MkWidget (ButtonProps ())
+button = buttonImpl
+  <<< unsafeCoerce
+  <<< propsToValueOrBindings @(ButtonProps ())
+
+button' ∷ MkWidgetWithUpdates (ButtonProps ())
+button' = mkWidgetWithUpdates button
 
 foreign import buttonImpl ∷ Record (ButtonProps ()) → Widget
-
-type UpdateButtonProps = Record (ButtonProps ()) → Record (ButtonProps ())
-
-button'
-  ∷ ∀ r r'
-  . Union r r' (ButtonProps ())
-  ⇒ Record r
-  → Widget /\ (UpdateButtonProps → Effect Unit)
-button' props =
-  let
-    widget = button props
-    update = unsafeWidgetUpdate @(ButtonProps ()) widget
-  in
-    widget /\ update
 

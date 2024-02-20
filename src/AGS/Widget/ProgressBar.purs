@@ -1,19 +1,18 @@
-module AGS.Widget.ProgressBar
-  ( ProgressBarProps
-  , UpdateProgressBarProps
-  , progressBar
-  , progressBar'
-  ) where
+module AGS.Widget.ProgressBar (ProgressBarProps, progressBar, progressBar') where
 
 import Prelude
 
-import AGS.Widget.Internal (AGSWidgetProps, unsafeWidgetUpdate)
-import Data.Tuple.Nested (type (/\), (/\))
-import Effect (Effect)
+import AGS.Binding (ValueOrBinding)
+import AGS.Widget.Internal
+  ( AGSWidgetProps
+  , MkWidget
+  , MkWidgetWithUpdates
+  , mkWidgetWithUpdates
+  , propsToValueOrBindings
+  )
 import Gtk.Orientable (GtkOrientableProps)
 import Gtk.ProgressBar (GtkProgressBarProps)
 import Gtk.Widget (Widget)
-import Prim.Row (class Union)
 import Type.Row (type (+))
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -22,28 +21,17 @@ type ProgressBarProps r =
     + GtkOrientableProps
     + GtkProgressBarProps
     +
-      ( vertical ∷ Boolean
-      , value ∷ Number
+      ( vertical ∷ ValueOrBinding Boolean
+      , value ∷ ValueOrBinding Number
       | r
       )
 
-progressBar ∷ ∀ r r'. Union r r' (ProgressBarProps ()) ⇒ Record r → Widget
-progressBar = progressBarImpl <<< unsafeCoerce
+progressBar ∷ MkWidget (ProgressBarProps ())
+progressBar = progressBarImpl <<< unsafeCoerce <<< propsToValueOrBindings
+  @(ProgressBarProps ())
+
+progressBar' ∷ MkWidgetWithUpdates (ProgressBarProps ())
+progressBar' = mkWidgetWithUpdates progressBar
 
 foreign import progressBarImpl ∷ Record (ProgressBarProps ()) → Widget
-
-type UpdateProgressBarProps =
-  Record (ProgressBarProps ()) → Record (ProgressBarProps ())
-
-progressBar'
-  ∷ ∀ r r'
-  . Union r r' (ProgressBarProps ())
-  ⇒ Record r
-  → Widget /\ (UpdateProgressBarProps → Effect Unit)
-progressBar' props =
-  let
-    widget = progressBar props
-    update = unsafeWidgetUpdate @(ProgressBarProps ()) widget
-  in
-    widget /\ update
 

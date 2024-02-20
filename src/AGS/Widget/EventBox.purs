@@ -1,18 +1,18 @@
-module AGS.Widget.EventBox
-  ( EventBoxProps
-  , UpdateEventBoxProps
-  , eventBox
-  , eventBox'
-  ) where
+module AGS.Widget.EventBox (EventBoxProps, eventBox, eventBox') where
 
 import Prelude
 
-import AGS.Widget.Internal (AGSWidgetProps, unsafeWidgetUpdate)
-import Data.Tuple.Nested (type (/\), (/\))
+import AGS.Binding (ValueOrBinding)
+import AGS.Widget.Internal
+  ( AGSWidgetProps
+  , MkWidget
+  , MkWidgetWithUpdates
+  , mkWidgetWithUpdates
+  , propsToValueOrBindings
+  )
 import Effect (Effect)
 import Gtk.Container (GtkContainerProps)
 import Gtk.Widget (Widget)
-import Prim.Row (class Union)
 import Type.Row (type (+))
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -20,39 +20,25 @@ type EventBoxProps r =
   AGSWidgetProps
     + GtkContainerProps
     +
-      ( onPrimaryClick ∷ Effect Unit
-      , onSecondaryClick ∷ Effect Unit
-      , onMiddleClick ∷ Effect Unit
-      , onPrimaryClickRelease ∷ Effect Unit
-      , onSecondaryClickRelease ∷ Effect Unit
-      , onMiddleClickRelease ∷ Effect Unit
-      , onHover ∷ Effect Unit
-      , onHoverLost ∷ Effect Unit
-      , onScrollUp ∷ Effect Unit
-      , onScrollDown ∷ Effect Unit
+      ( onPrimaryClick ∷ ValueOrBinding (Effect Unit)
+      , onSecondaryClick ∷ ValueOrBinding (Effect Unit)
+      , onMiddleClick ∷ ValueOrBinding (Effect Unit)
+      , onPrimaryClickRelease ∷ ValueOrBinding (Effect Unit)
+      , onSecondaryClickRelease ∷ ValueOrBinding (Effect Unit)
+      , onMiddleClickRelease ∷ ValueOrBinding (Effect Unit)
+      , onHover ∷ ValueOrBinding (Effect Unit)
+      , onHoverLost ∷ ValueOrBinding (Effect Unit)
+      , onScrollUp ∷ ValueOrBinding (Effect Unit)
+      , onScrollDown ∷ ValueOrBinding (Effect Unit)
       | r
       )
 
-eventBox
-  ∷ ∀ r r'
-  . Union r r' (EventBoxProps ())
-  ⇒ Record r
-  → Widget
-eventBox = eventBoxImpl <<< unsafeCoerce
+eventBox ∷ MkWidget (EventBoxProps ())
+eventBox = eventBoxImpl <<< unsafeCoerce <<< propsToValueOrBindings
+  @(EventBoxProps ())
+
+eventBox' ∷ MkWidgetWithUpdates (EventBoxProps ())
+eventBox' = mkWidgetWithUpdates eventBox
 
 foreign import eventBoxImpl ∷ Record (EventBoxProps ()) → Widget
-
-type UpdateEventBoxProps = Record (EventBoxProps ()) → Record (EventBoxProps ())
-
-eventBox'
-  ∷ ∀ r r'
-  . Union r r' (EventBoxProps ())
-  ⇒ Record r
-  → Widget /\ (UpdateEventBoxProps → Effect Unit)
-eventBox' props =
-  let
-    widget = eventBox props
-    update = unsafeWidgetUpdate @(EventBoxProps ()) widget
-  in
-    widget /\ update
 

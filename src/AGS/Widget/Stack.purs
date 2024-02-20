@@ -1,19 +1,19 @@
-module AGS.Widget.Stack
-  ( StackProps
-  , stack
-  , stack'
-  ) where
+module AGS.Widget.Stack (StackProps, stack, stack') where
 
 import Prelude
 
-import AGS.Widget.Internal (AGSWidgetProps, unsafeWidgetUpdate)
-import Data.Tuple.Nested (type (/\), (/\))
-import Effect (Effect)
+import AGS.Binding (ValueOrBinding)
+import AGS.Widget.Internal
+  ( AGSWidgetProps
+  , MkWidget
+  , MkWidgetWithUpdates
+  , mkWidgetWithUpdates
+  , propsToValueOrBindings
+  )
 import Foreign.Object (Object)
 import Gtk.Container (GtkContainerProps)
 import Gtk.Stack (GtkStackProps)
 import Gtk.Widget (Widget)
-import Prim.Row (class Union)
 import Type.Row (type (+))
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -22,27 +22,16 @@ type StackProps r =
     + GtkContainerProps
     + GtkStackProps Widget
     +
-      ( children ∷ Object Widget
-      , shown ∷ String
+      ( children ∷ ValueOrBinding (Object Widget)
+      , shown ∷ ValueOrBinding String
       | r
       )
 
-stack ∷ ∀ r r'. Union r r' (StackProps ()) ⇒ Record r → Widget
-stack = stackImpl <<< unsafeCoerce
+stack ∷ MkWidget (StackProps ())
+stack = stackImpl <<< unsafeCoerce <<< propsToValueOrBindings @(StackProps ())
+
+stack' ∷ MkWidgetWithUpdates (StackProps ())
+stack' = mkWidgetWithUpdates stack
 
 foreign import stackImpl ∷ Record (StackProps ()) → Widget
-
-type UpdateStackProps = Record (StackProps ()) → Record (StackProps ())
-
-stack'
-  ∷ ∀ r r'
-  . Union r r' (StackProps ())
-  ⇒ Record r
-  → Widget /\ (UpdateStackProps → Effect Unit)
-stack' props =
-  let
-    widget = stack props
-    update = unsafeWidgetUpdate @(StackProps ()) widget
-  in
-    widget /\ update
 

@@ -1,6 +1,13 @@
-module AGS.Widget.Menu.Item where
+module AGS.Widget.Menu.Item (MenuItemProps, menuItem, menuItem') where
 
-import AGS.Widget.Internal (AGSWidgetProps)
+import AGS.Binding (ValueOrBinding)
+import AGS.Widget.Internal
+  ( AGSWidgetProps
+  , MkWidget
+  , MkWidgetWithUpdates
+  , mkWidgetWithUpdates
+  , propsToValueOrBindings
+  )
 import Effect (Effect)
 import Gtk.Actionable (GtkActionableProps)
 import Gtk.Activatable (GtkActivatableProps)
@@ -8,11 +15,8 @@ import Gtk.Container (GtkContainerProps)
 import Gtk.MenuItem (GtkMenuItemProps)
 import Gtk.Widget (Widget)
 import Prelude ((<<<))
-import Prim.Row (class Union)
 import Type.Row (type (+))
 import Unsafe.Coerce (unsafeCoerce)
-
-foreign import data MenuItem ∷ Type
 
 type MenuItemProps r =
   AGSWidgetProps
@@ -22,15 +26,20 @@ type MenuItemProps r =
     -- should be somehow constrained to `Menu` rather than all widgets
     + GtkMenuItemProps Widget
     +
-      ( child ∷ Widget
-      , onActivate ∷ Effect Boolean
-      , onSelect ∷ Effect Boolean
-      , onDeselect ∷ Effect Boolean
+      ( child ∷ ValueOrBinding Widget
+      , onActivate ∷ ValueOrBinding (Effect Boolean)
+      , onSelect ∷ ValueOrBinding (Effect Boolean)
+      , onDeselect ∷ ValueOrBinding (Effect Boolean)
       | r
       )
 
-menuItem ∷ ∀ r r'. Union r r' (MenuItemProps ()) ⇒ Record r → MenuItem
-menuItem = menuItemImpl <<< unsafeCoerce
+menuItem ∷ MkWidget (MenuItemProps ())
+menuItem = menuItemImpl
+  <<< unsafeCoerce
+  <<< propsToValueOrBindings @(MenuItemProps ())
 
-foreign import menuItemImpl ∷ Record (MenuItemProps ()) → MenuItem
+menuItem' ∷ MkWidgetWithUpdates (MenuItemProps ())
+menuItem' = mkWidgetWithUpdates menuItem
+
+foreign import menuItemImpl ∷ Record (MenuItemProps ()) → Widget
 
