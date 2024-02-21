@@ -552,7 +552,7 @@ workspace:
   extra_packages:
     ags-bindings:
       git: https://github.com/postsolar/purescript-ags-bindings.git
-      ref: 52185fac7caae70d5483fb2d33408ac365bfd2d5
+      ref: a9d2ef3bda754374f1aef96a862678b0dec32ece
 packages:
   aff:
     type: registry
@@ -579,7 +579,7 @@ packages:
   ags-bindings:
     type: git
     url: https://github.com/postsolar/purescript-ags-bindings.git
-    rev: 52185fac7caae70d5483fb2d33408ac365bfd2d5
+    rev: a9d2ef3bda754374f1aef96a862678b0dec32ece
     dependencies:
       - aff
       - console

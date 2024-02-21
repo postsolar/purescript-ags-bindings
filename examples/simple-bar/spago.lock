@@ -1,6 +1,6 @@
 workspace:
   packages:
-    ags-config:
+    ags-bindings-example-simple-bar:
       path: ./
       dependencies:
         - ags-bindings
@@ -10,12 +10,12 @@ workspace:
         - formatters
         - now
         - prelude
-        - record-studio
         - yoga-json
       test_dependencies: []
       build_plan:
         - aff
         - ags-bindings
+        - arraybuffer-types
         - arrays
         - assert
         - bifunctors
@@ -82,6 +82,7 @@ workspace:
         - unsafe-coerce
         - untagged-union
         - variant
+        - web-encoding
         - yoga-json
         - yoga-tree
   package_set:
@@ -567,7 +568,7 @@ workspace:
   extra_packages:
     ags-bindings:
       git: https://github.com/postsolar/purescript-ags-bindings.git
-      ref: 05ecdd265dd95441faaf963f9ac815daf616c4de
+      ref: a9d2ef3bda754374f1aef96a862678b0dec32ece
     yoga-json:
       git: https://github.com/rowtype-yoga/purescript-yoga-json.git
       ref: da7fd729964a9aafa65ec81918bddc1dec12d692
@@ -629,7 +630,7 @@ packages:
   ags-bindings:
     type: git
     url: https://github.com/postsolar/purescript-ags-bindings.git
-    rev: 05ecdd265dd95441faaf963f9ac815daf616c4de
+    rev: a9d2ef3bda754374f1aef96a862678b0dec32ece
     dependencies:
       - aff
       - console
@@ -640,7 +641,14 @@ packages:
       - nullable
       - prelude
       - record
+      - record-studio
       - untagged-union
+      - web-encoding
+  arraybuffer-types:
+    type: registry
+    version: 3.0.2
+    integrity: sha256-mQKokysYVkooS4uXbO+yovmV/s8b138Ws3zQvOwIHRA=
+    dependencies: []
   arrays:
     type: registry
     version: 7.3.0
@@ -1356,6 +1364,15 @@ packages:
       - record
       - tuples
       - unsafe-coerce
+  web-encoding:
+    type: registry
+    version: 3.0.0
+    integrity: sha256-lqvbj4Rw9mqgSnKx5vSdeNz4vTGxuRQI/PdSK9+kmk0=
+    dependencies:
+      - arraybuffer-types
+      - effect
+      - newtype
+      - prelude
   yoga-json:
     type: git
     url: https://github.com/rowtype-yoga/purescript-yoga-json.git

@@ -64,14 +64,12 @@ appList = do
     apps ∷ Widget
     apps =
       Widget.scrollable
-        -- Since many widget properties accept either a "raw" value or a binding for
-        -- that value, it's necessary to wrap them usin `Untagged.Union.asOneOf`.
-        { child: asOneOf $
+        { child:
             Widget.box
               -- We use the function `appEntry` declared below and pass it the binding to
               -- the search query to construct an array of widgets each representing
               -- a particular application.
-              { children: asOneOf $
+              { children:
                   let
                     appWidgets ∷ Array Widget
                     appWidgets = appEntry currQuery <$> allApps
@@ -85,7 +83,7 @@ appList = do
         }
 
     entryBox = Widget.entry
-      { hexpand: asOneOf true
+      { hexpand: true
       , css: "margin-bottom: 5px;"
       -- When the search query is accepted with the Enter key,
       -- we get the value of the variable of the applications,
@@ -111,7 +109,7 @@ appList = do
   pure $ Widget.box
     { vertical: true
     , css: "margin: 10px;"
-    , children: asOneOf [ entryBox, apps ]
+    , children: [ entryBox, apps ]
     }
 
 appEntry ∷ Binding String → Applications.Application → Widget
@@ -128,15 +126,15 @@ appEntry currQuery app =
       }
 
     label = Widget.label
-      { className: asOneOf "appTitle"
-      , label: asOneOf name
+      { className: "appTitle"
+      , label: name
       , xalign: 0.0
       , vpack: "center"
       , truncate: "end"
       }
 
     buttonChild = Widget.box
-      { children: asOneOf [ icon, label ]
+      { children: [ icon, label ]
       , spacing: 5.0
       }
 
@@ -158,10 +156,10 @@ appEntry currQuery app =
 
   in
     Widget.button
-      { child: asOneOf buttonChild
+      { child: buttonChild
       , onClicked: do
           Applications.launchApp app
           App.quit
-      , visible: asOneOf visible
+      , visible
       }
 
