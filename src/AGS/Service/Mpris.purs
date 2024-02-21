@@ -27,7 +27,12 @@ import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2)
-import GObject (class GObjectSignal, HandlerID, unsafeConnect, unsafeCopyGObjectProps)
+import GObject
+  ( class GObjectSignal
+  , HandlerID
+  , unsafeConnect
+  , unsafeCopyGObjectProps
+  )
 import Record as R
 import Record.Studio.MapKind (mapRecordKind)
 import Type.Proxy (Proxy(..))
