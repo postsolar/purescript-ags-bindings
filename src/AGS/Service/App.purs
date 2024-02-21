@@ -28,6 +28,10 @@ foreign import data App ∷ Service
 
 -- * Props
 
+foreign import iconTheme ∷ Effect String
+foreign import cursorTheme ∷ Effect String
+foreign import gtkTheme ∷ Effect String
+foreign import configPath ∷ Effect String
 foreign import configDir ∷ Effect String
 foreign import windows ∷ Effect (Array Window)
 
@@ -44,6 +48,12 @@ instance ServiceConnect App "window-toggled" (EffectFn2 String Boolean Unit) whe
 foreign import connectApp ∷ ∀ f. String → f → Effect (HandlerID App)
 
 -- * Methods
+
+foreign import addIcons ∷ String → Effect Unit
+
+foreign import setIconTheme ∷ String → Effect Unit
+foreign import setCursorTheme ∷ String → Effect Unit
+foreign import setGtkTheme ∷ String → Effect Unit
 
 foreign import addWindow ∷ Window → Effect Unit
 foreign import removeWindow ∷ Window → Effect Unit

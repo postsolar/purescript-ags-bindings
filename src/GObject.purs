@@ -5,6 +5,7 @@ module GObject
   , connect
   , unsafeConnect
   , disconnect
+  , unsafeCopyGObjectProps
   ) where
 
 import Prelude
@@ -26,6 +27,7 @@ import Effect.Uncurried
   , runEffectFn3
   )
 import Prim.TypeError as TE
+import Record.Studio.Keys (class Keys, keys)
 import Type.Proxy (Proxy(..))
 
 foreign import data HandlerID ∷ ∀ k. k → Type
@@ -74,4 +76,11 @@ disconnect ∷ ∀ @s @o @f. GObjectSignal s o f ⇒ o → HandlerID o → Effec
 disconnect = runEffectFn2 disconnectImpl
 
 foreign import disconnectImpl ∷ ∀ o. EffectFn2 o (HandlerID o) Unit
+
+-- | Copy a set of properties from a given GObject.
+unsafeCopyGObjectProps ∷ ∀ @props o. Keys props ⇒ o → Record props
+unsafeCopyGObjectProps = unsafeCopyGObjectImpl (keys (Proxy @props))
+
+foreign import unsafeCopyGObjectImpl
+  ∷ ∀ props o. Array String → o → Record props
 
