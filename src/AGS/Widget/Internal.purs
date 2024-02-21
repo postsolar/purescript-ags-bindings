@@ -169,6 +169,8 @@ mkWidgetWithUpdates ctor props = widget /\ update
   widget = ctor props
   update = unsafeWidgetUpdate @props widget
 
+foreign import isBinding ∷ ∀ a. a → Boolean
+
 -- *** Utils for widgets updates
 
 unsafeWidgetUpdate
@@ -536,18 +538,39 @@ slider = sliderImpl
       #
         ( if RU.unsafeHas "marks" r then
             RU.unsafeSet "marks"
-              (prepareMark `map @Array` RU.unsafeGet "marks" r)
+              (prepareMarks $ RU.unsafeGet "marks" r)
           else
             identity
         )
       #
         ( if RU.unsafeHas "onChange" r then
             RU.unsafeSet "onChange"
-              (mkEffectFn1 \{ value } → RU.unsafeGet "onChange" r value)
+              (prepareOnChangeCb $ RU.unsafeGet "onChange" r)
           else
             identity
         )
 
+  prepareOnChangeCb
+    ∷ (Number → Effect Unit) {- or Binding -}
+    → EffectFn1 { value ∷ Number } Unit {- or Binding -}
+  prepareOnChangeCb fn =
+    if isBinding fn then
+      unsafeCoerce $ map (\f → mkEffectFn1 \{ value } → f value)
+        (unsafeCoerce fn ∷ Binding (Number → Effect Unit))
+    else
+      mkEffectFn1 \{ value } → fn value
+
+  prepareMarks
+    ∷ Array Mark {- or Binding (Array Mark) -}
+    → Array (Array Number) {- or Binding (Array (Array Number)) -}
+  prepareMarks ms =
+    if isBinding ms then
+      unsafeCoerce $ map (map prepareMark)
+        (unsafeCoerce ms ∷ Binding (Array Mark))
+    else
+      map prepareMark ms
+
+  prepareMark ∷ Mark → Array (Number {- or String -} )
   prepareMark { at, label: markLabel, position } =
     [ at ] <> maybe [] unsafeCoerce markLabel <> maybe [] unsafeCoerce position
 

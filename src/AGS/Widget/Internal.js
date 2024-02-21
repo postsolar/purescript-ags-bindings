@@ -1,3 +1,5 @@
+import { Binding } from 'resource:///com/github/Aylur/ags/service.js'
+
 export const unsafeGetwidgetPropsImpl =
   ks => widget =>
     Object.fromEntries(ks.map(k => [k, widget[k]]))
@@ -8,6 +10,10 @@ export const unsafeUpdateWidgetProps =
       if (widget[k] != v)
         widget[k] = v
     })
+
+export const isBinding =
+  v =>
+    v instanceof Binding
 
 // Widgets
 
