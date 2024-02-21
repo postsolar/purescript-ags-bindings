@@ -12,10 +12,7 @@ import AGS.Service.Hyprland as H
 import AGS.Utils.Exec as Exec
 import AGS.Variable as Var
 import AGS.Widget (Widget)
-import AGS.Widget.Box as Box
-import AGS.Widget.Button as Button
-import AGS.Widget.CenterBox as CenterBox
-import AGS.Widget.Label as Label
+import AGS.Widget as Widget
 import AGS.Widget.Window (Window, window) as Window
 import AGS.Widget.Window.Anchor (left, right, top) as Window
 import AGS.Widget.Window.Exclusivity (exclusive) as Window
@@ -51,9 +48,12 @@ main = ado
 
 -- This is the window we're going to use.
 -- It uses one child widget `barCenterBox`, which is declared just below.
--- A widget's child could be of type `Widget` (a static widget) or
--- `Binding Widget` (a dynamically updated wrapping over a `Widget`).
--- This is an untagged union so it has to be wrapped with `Union.Untagged.asOneOf`.
+-- A widget's child (and, in fact, all other properties) could be
+-- of type `Widget` (a static widget) or `Binding Widget`,
+-- a dynamically updated wrapping over a `Widget`.
+-- Although it's an untagged union, for all widgets it's not needed
+-- to wrap them with `Untagged.Union.asOneOf`. But windows are special
+-- and require explicit wrapping of child widgets.
 
 barWindow ∷ Effect Window.Window
 barWindow = do
@@ -71,13 +71,13 @@ barCenterBox = ado
   center ← barCenter
   right ← barRight
   in
-    CenterBox.centerBox
-      { startWidget: asOneOf left
-      , centerWidget: asOneOf center
-      , endWidget: asOneOf right
+    Widget.centerBox
+      { startWidget: left
+      , centerWidget: center
+      , endWidget: right
       }
 
--- The widget created by `AGS.Widget.Box.box` can have
+-- The widget created by `AGS.Widget.box` can have
 -- multiple children. As before, it can be either `Array Widget`
 -- or `Binding (Array Widget)`.
 
@@ -85,16 +85,16 @@ barLeft ∷ Effect Widget
 barLeft = ado
   wss ← workspaces
   in
-    Box.box
-      { children: asOneOf wss
+    Widget.box
+      { children: wss
       }
 
 barCenter ∷ Effect Widget
 barCenter = ado
   dtButton ← dateTimeButton
   in
-    Box.box
-      { children: asOneOf [ dtButton ]
+    Widget.box
+      { children: [ dtButton ]
       }
 
 barRight ∷ Effect Widget
@@ -102,8 +102,8 @@ barRight = ado
   sysStats ← sysStatsToggleable
   volume ← volumeToggleable
   in
-    Box.box
-      { children: asOneOf [ sysStats, volume ]
+    Widget.box
+      { children: [ sysStats, volume ]
       , hpack: "end"
       }
 
@@ -113,25 +113,28 @@ barRight = ado
 -- synchronously or asynchronously. In the former case, the function
 -- `exec` takes a single string as the command. In the latter case,
 -- it takes an array of strings to separate the command and its arguments.
+-- NOTE: Commands are not wrapped in a shell, this has to be done explicitly.
 
 -- `AGS.Variable` exports multiple functions to work with mutable data.
 -- A `Variable` is an opaque type with methods for getting and setting current value.
 -- It can be obtained either by storing a pure value (`Variable.store`), or
 -- by listening to the output of an external command (`Variable.listen`), or
 -- by polling (executing periodically with `Variable.poll`) an external command.
--- Finally, a variable can be created by polling a value of type `Effect a`.
+-- Finally, a variable can be created by polling a value of type `Effect a` with `Variable.serve`.
 -- After a variable is obtained, it can be made into a `Binding`
 -- with `Variable.bindValue` to be used with widgets.
 
 volumeToggleable ∷ Effect Widget
 volumeToggleable = do
   initValue ← Exec.exec $ "pamixer --get-volume-human"
-  lvl ←
-    Var.listen
-      { command: [ "sh", "-c", volumeCommand ]
-      , initValue
-      , transform: const identity
-      } <#> Var.bindValue
+  lvlBinding ←
+    Var.bindValue
+      <$>
+        Var.listen
+          { command: [ "sh", "-c", volumeCommand ]
+          , initValue
+          , transform: const identity
+          }
 
   let
     display = Var.store false
@@ -142,17 +145,19 @@ volumeToggleable = do
     -- Via `Applicative` instance bindings also have `Semigroup` and `Monoid` instances.
     -- When multiple bindings are composed together, the resulting binding
     -- will be updated whenever any of its components get updated.
-    -- See the next widgets for more examples of how to utilize bindings.
+    -- See the next widgets for more examples of how to utilize variables and bindings.
 
-    label = Label.label
-      { label: asOneOf ado
-          display' ← Var.bindValue display
-          lvl' ← lvl
-          in if display' then "volume: " <> lvl' else "  "
-      }
+    label =
+      Widget.label
+        { label:
+            ado
+              display' ← Var.bindValue display
+              lvl' ← lvlBinding
+              in if display' then "volume: " <> lvl' else "  "
+        }
 
-  pure $ Button.button
-    { child: asOneOf label
+  pure $ Widget.button
+    { child: label
     , onClicked: Var.set not display
     }
 
@@ -176,22 +181,23 @@ sysStatsToggleable = ado
   let
     display = Var.store false
 
-    label = Label.label
-      { label: asOneOf ado
-          cpu' ← cpu
-          ram' ← ram
-          display' ← Var.bindValue display
-          in
-            case display', cpu', ram' of
-              false, _, _ → "  "
-              _, Nothing, _ → "Error retrieving CPU data"
-              _, _, Nothing → "Error retrieving RAM data"
-              _, Just c, Just r → printStats c r
+    label = Widget.label
+      { label:
+          ado
+            cpu' ← cpu
+            ram' ← ram
+            display' ← Var.bindValue display
+            in
+              case display', cpu', ram' of
+                false, _, _ → "  "
+                _, Nothing, _ → "Error retrieving CPU data"
+                _, _, Nothing → "Error retrieving RAM data"
+                _, Just c, Just r → printStats c r
       }
 
   in
-    Button.button
-      { child: asOneOf label
+    Widget.button
+      { child: label
       , onClicked: Var.set not display
       }
 
@@ -244,30 +250,29 @@ dateTimeButton ∷ Effect Widget
 dateTimeButton = do
   now ← Now.nowDateTime
   offset ← Now.getTimezoneOffset
-  dt ← Var.serve
+  dtVar ← Var.serve
     { initValue: now
     , command: Now.nowDateTime
     , interval: 1000
     }
 
   let
-    ft = Var.store dtFormatLong
+    ftVar = Var.store dtFormatLong
 
     formatDT ft' =
       DT.adjust (negateDuration offset)
         >>> maybe "Can't adjust datetime for timezone" (FDT.format ft')
 
-    label = Label.label
-      { label: asOneOf $
-          lift2 formatDT (Var.bindValue ft) (Var.bindValue dt)
+    label = Widget.label
+      { label: lift2 formatDT (Var.bindValue ftVar) (Var.bindValue dtVar)
       }
 
     flipFt curr
       | curr == dtFormatLong = dtFormatShort
       | otherwise = dtFormatLong
 
-  pure $ Button.button
-    { child: asOneOf label
+  pure $ Widget.button
+    { child: label
     , onClicked: Var.set flipFt ft
     }
 
@@ -306,9 +311,10 @@ dateTimeButton = do
 
 workspaces ∷ Effect (Binding (Array Widget))
 workspaces = ado
-  wss ←
+  workspacesBinding ←
     Service.bindServiceProp @H.Hyprland @"workspaces"
-  activeWsId ←
+
+  activeWorkspaceIdBinding ←
     map _.id <$> Service.bindServiceProp @H.HyprlandActive @"workspace"
 
   let
@@ -318,17 +324,21 @@ workspaces = ado
     -- the value of the underlying binding changes.
 
     wssWidgets =
-      wss <#> A.sort >>> map \{ id } →
-        Button.button
-          { child:
-              asOneOf $ Label.label { label: asOneOf $ show id }
-          , onClicked:
-              Aff.launchAff_ do
-                void $ H.messageAsync $ "dispatch workspace " <> show id
-          , className:
-              asOneOf $ activeWsId <#> \actId →
-                guard (actId == id) "focused"
-          }
+      workspacesBinding
+        <#> A.sort >>> map \{ id } →
+          Widget.button
+            { child:
+                Widget.label
+                  { label: show id
+                  }
+            , onClicked:
+                Aff.launchAff_ do
+                  void $ H.messageAsync $ "dispatch workspace " <> show id
+            , className:
+                activeWorkspaceIdBinding
+                  <#> \actId →
+                    guard (actId == id) "focused"
+            }
 
   in wssWidgets
 

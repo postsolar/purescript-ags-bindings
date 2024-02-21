@@ -1,5 +1,5 @@
 package:
-  name: ags-bindings-example-simple-bar
+  name: simple-bar
   dependencies:
     - ags-bindings
     - console
@@ -18,7 +18,7 @@ workspace:
   extra_packages:
     ags-bindings:
       git: https://github.com/postsolar/purescript-ags-bindings.git
-      ref: 05ecdd265dd95441faaf963f9ac815daf616c4de
+      ref: a9d2ef3bda754374f1aef96a862678b0dec32ece
     yoga-json:
       git: https://github.com/rowtype-yoga/purescript-yoga-json.git
       ref: da7fd729964a9aafa65ec81918bddc1dec12d692
