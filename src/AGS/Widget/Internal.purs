@@ -10,39 +10,55 @@ module AGS.Widget.Internal
   , toValueOrBinding
   , MkWidget
   , MkWidgetWithUpdates
-  , mkWidgetWithUpdates
+  , withUpdates
 
   -- Widgets
   , box
   , box'
+  , BoxProps
   , button
   , button'
+  , ButtonProps
   , centerBox
   , centerBox'
+  , CenterBoxProps
   , circularProgress
   , circularProgress'
+  , CircularProgressProps
   , entry
   , entry'
+  , EntryProps
   , eventBox
   , eventBox'
+  , EventBoxProps
   , icon
   , icon'
+  , IconProps
   , label
   , label'
+  , LabelProps
   , menu
   , menu'
+  , MenuProps
   , menuItem
   , menuItem'
+  , MenuItemProps
   , overlay
   , overlay'
+  , OverlayProps
   , progressBar
   , progressBar'
+  , ProgressBarProps
   , revealer
   , revealer'
+  , RevealerProps
   , scrollable
   , scrollable'
+  , ScrollableProps
   , slider
   , slider'
+  , SliderProps
+  , Mark
   , MarkPosition
   , markPositionTop
   , markPositionLeft
@@ -50,6 +66,7 @@ module AGS.Widget.Internal
   , markPositionBottom
   , stack
   , stack'
+  , StackProps
   ) where
 
 import Prelude
@@ -162,9 +179,21 @@ type MkWidgetWithUpdates props =
     → Widget /\ ((Record props → Record props) → Effect Unit)
   )
 
-mkWidgetWithUpdates
-  ∷ ∀ props. Keys props ⇒ MkWidget props → MkWidgetWithUpdates props
-mkWidgetWithUpdates ctor props = widget /\ update
+-- | Construct a widget with a function which, when applied to a function
+-- | from widget properties to widget properties, would update that widget.
+-- |
+-- | ```purescript
+-- | do
+-- |   let box /\ updateBox = Widget.withUpdates Widget.box {}
+-- |   updateBox (\w -> w { css = w.css <> " color: red;" })
+-- |   pure box
+-- | ```
+-- |
+-- | Note: type inference may be weak here, use visible type application to aid the compiler.
+-- | For example `withUpdates @(LabelProps ()) label { label: "my label" }`
+withUpdates ∷ ∀ @props. Keys props ⇒ MkWidget props → MkWidgetWithUpdates props
+withUpdates ctor props = widget /\ update
+
   where
   widget = ctor props
   update = unsafeWidgetUpdate @props widget
@@ -227,7 +256,7 @@ box ∷ MkWidget (BoxProps ())
 box = boxImpl <<< unsafeCoerce <<< propsToValueOrBindings @(BoxProps ())
 
 box' ∷ MkWidgetWithUpdates (BoxProps ())
-box' = mkWidgetWithUpdates box
+box' = withUpdates box
 
 -- * Button
 
@@ -257,7 +286,7 @@ button = buttonImpl
   <<< propsToValueOrBindings @(ButtonProps ())
 
 button' ∷ MkWidgetWithUpdates (ButtonProps ())
-button' = mkWidgetWithUpdates button
+button' = withUpdates button
 
 -- * CenterBox
 
@@ -275,7 +304,7 @@ centerBox = centerBoxImpl
   <<< propsToValueOrBindings @(CenterBoxProps ())
 
 centerBox' ∷ MkWidgetWithUpdates (CenterBoxProps ())
-centerBox' = mkWidgetWithUpdates centerBox
+centerBox' = withUpdates centerBox
 
 -- * CircularProgress
 
@@ -297,7 +326,7 @@ circularProgress = circularProgressImpl
   <<< propsToValueOrBindings @(CircularProgressProps ())
 
 circularProgress' ∷ MkWidgetWithUpdates (CircularProgressProps ())
-circularProgress' = mkWidgetWithUpdates circularProgress
+circularProgress' = withUpdates circularProgress
 
 -- * Entry
 
@@ -314,7 +343,7 @@ entry ∷ MkWidget (EntryProps ())
 entry = entryImpl <<< unsafeCoerce <<< propsToValueOrBindings @(EntryProps ())
 
 entry' ∷ MkWidgetWithUpdates (EntryProps ())
-entry' = mkWidgetWithUpdates entry
+entry' = withUpdates entry
 
 -- * EventBox
 
@@ -341,7 +370,7 @@ eventBox = eventBoxImpl
   <<< propsToValueOrBindings @(EventBoxProps ())
 
 eventBox' ∷ MkWidgetWithUpdates (EventBoxProps ())
-eventBox' = mkWidgetWithUpdates eventBox
+eventBox' = withUpdates eventBox
 
 -- * Icon
 
@@ -359,7 +388,7 @@ icon ∷ MkWidget (IconProps ())
 icon = iconImpl <<< unsafeCoerce <<< propsToValueOrBindings @(IconProps ())
 
 icon' ∷ MkWidgetWithUpdates (IconProps ())
-icon' = mkWidgetWithUpdates icon
+icon' = withUpdates icon
 
 -- * Label
 
@@ -376,7 +405,7 @@ label ∷ MkWidget (LabelProps ())
 label = labelImpl <<< unsafeCoerce <<< propsToValueOrBindings @(LabelProps ())
 
 label' ∷ MkWidgetWithUpdates (LabelProps ())
-label' = mkWidgetWithUpdates label
+label' = withUpdates label
 
 -- * Menu
 
@@ -396,7 +425,7 @@ menu ∷ MkWidget (MenuProps ())
 menu = menuImpl <<< unsafeCoerce <<< propsToValueOrBindings @(MenuProps ())
 
 menu' ∷ MkWidgetWithUpdates (MenuProps ())
-menu' = mkWidgetWithUpdates menu
+menu' = withUpdates menu
 
 -- * MenuItem
 
@@ -421,7 +450,7 @@ menuItem = menuItemImpl
   <<< propsToValueOrBindings @(MenuItemProps ())
 
 menuItem' ∷ MkWidgetWithUpdates (MenuItemProps ())
-menuItem' = mkWidgetWithUpdates menuItem
+menuItem' = withUpdates menuItem
 
 -- * Overlay
 
@@ -440,7 +469,7 @@ overlay = overlayImpl
   <<< propsToValueOrBindings @(OverlayProps ())
 
 overlay' ∷ MkWidgetWithUpdates (OverlayProps ())
-overlay' = mkWidgetWithUpdates overlay
+overlay' = withUpdates overlay
 
 -- * ProgressBar
 
@@ -460,7 +489,7 @@ progressBar = progressBarImpl
   <<< propsToValueOrBindings @(ProgressBarProps ())
 
 progressBar' ∷ MkWidgetWithUpdates (ProgressBarProps ())
-progressBar' = mkWidgetWithUpdates progressBar
+progressBar' = withUpdates progressBar
 
 -- * Revealer
 
@@ -474,7 +503,7 @@ revealer ∷ MkWidget (RevealerProps ())
 revealer = revealerImpl <<< unsafeCoerce
 
 revealer' ∷ MkWidgetWithUpdates (RevealerProps ())
-revealer' = mkWidgetWithUpdates revealer
+revealer' = withUpdates revealer
 
 -- * Scrollable
 
@@ -494,7 +523,7 @@ scrollable = scrollableImpl
   <<< propsToValueOrBindings @(ScrollableProps ())
 
 scrollable' ∷ MkWidgetWithUpdates (ScrollableProps ())
-scrollable' = mkWidgetWithUpdates scrollable
+scrollable' = withUpdates scrollable
 
 -- * Slider
 
@@ -575,7 +604,7 @@ slider = sliderImpl
     [ at ] <> maybe [] unsafeCoerce markLabel <> maybe [] unsafeCoerce position
 
 slider' ∷ MkWidgetWithUpdates (SliderProps ())
-slider' = mkWidgetWithUpdates slider
+slider' = withUpdates slider
 
 -- * Stack
 
@@ -593,5 +622,5 @@ stack ∷ MkWidget (StackProps ())
 stack = stackImpl <<< unsafeCoerce <<< propsToValueOrBindings @(StackProps ())
 
 stack' ∷ MkWidgetWithUpdates (StackProps ())
-stack' = mkWidgetWithUpdates stack
+stack' = withUpdates stack
 

@@ -18,9 +18,26 @@ import AGS.Widget.Internal
   , AGSWidgetProps
   , Any
   , AnyF
+  , BoxProps
+  , ButtonProps
+  , CenterBoxProps
+  , CircularProgressProps
+  , EntryProps
+  , EventBoxProps
+  , IconProps
+  , LabelProps
+  , Mark
   , MarkPosition
+  , MenuItemProps
+  , MenuProps
   , MkWidget
   , MkWidgetWithUpdates
+  , OverlayProps
+  , ProgressBarProps
+  , RevealerProps
+  , ScrollableProps
+  , SliderProps
+  , StackProps
   , ToValueOrBinding
   , box
   , box'
@@ -47,7 +64,6 @@ import AGS.Widget.Internal
   , menuItem
   , menuItem'
   , mkAny
-  , mkWidgetWithUpdates
   , overlay
   , overlay'
   , progressBar
@@ -62,6 +78,7 @@ import AGS.Widget.Internal
   , stack
   , stack'
   , toValueOrBinding
+  , withUpdates
   ) as Exports
 import AGS.Widget.Window (Window, WindowProps, window) as Exports
 import Effect (Effect)
