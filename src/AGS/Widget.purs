@@ -13,43 +13,56 @@ import AGS.Binding
   , overBoth
   , overValue
   ) as Exports
-import AGS.Widget.Box (BoxProps, box, box') as Exports
-import AGS.Widget.Button (ButtonProps, button, button') as Exports
-import AGS.Widget.CenterBox (CenterBoxProps, centerBox, centerBox') as Exports
-import AGS.Widget.CircularProgress
-  ( CircularProgressProps
+import AGS.Widget.Internal
+  ( class ToValueOrBindingC
+  , AGSWidgetProps
+  , Any
+  , AnyF
+  , MarkPosition
+  , MkWidget
+  , MkWidgetWithUpdates
+  , ToValueOrBinding
+  , box
+  , box'
+  , button
+  , button'
+  , centerBox
+  , centerBox'
   , circularProgress
   , circularProgress'
-  ) as Exports
-import AGS.Widget.Entry (EntryProps, entry, entry') as Exports
-import AGS.Widget.EventBox (EventBoxProps, eventBox, eventBox') as Exports
-import AGS.Widget.Icon (IconProps, icon, icon') as Exports
-import AGS.Widget.Internal (AGSWidgetProps, Any, AnyF, mkAny) as Exports
-import AGS.Widget.Label (LabelProps, label, label') as Exports
-import AGS.Widget.Menu (MenuProps, menu, menu') as Exports
-import AGS.Widget.Menu.Item (MenuItemProps, menuItem) as Exports
-import AGS.Widget.Overlay (OverlayProps, overlay, overlay') as Exports
-import AGS.Widget.ProgressBar (ProgressBarProps, progressBar, progressBar') as Exports
-import AGS.Widget.Revealer
-  ( GtkRevealerTransitionType
-  , RevealerProps
-  , revealer
-  , revealer'
-  , transitions
-  ) as Exports
-import AGS.Widget.Scrollable (ScrollableProps, scrollable, scrollable') as Exports
-import AGS.Widget.Slider
-  ( Mark
-  , MarkPosition
-  , SliderProps
+  , entry
+  , entry'
+  , eventBox
+  , eventBox'
+  , icon
+  , icon'
+  , label
+  , label'
   , markPositionBottom
   , markPositionLeft
   , markPositionRight
   , markPositionTop
+  , menu
+  , menu'
+  , menuItem
+  , menuItem'
+  , mkAny
+  , mkWidgetWithUpdates
+  , overlay
+  , overlay'
+  , progressBar
+  , progressBar'
+  , propsToValueOrBindings
+  , revealer
+  , revealer'
+  , scrollable
+  , scrollable'
   , slider
   , slider'
+  , stack
+  , stack'
+  , toValueOrBinding
   ) as Exports
-import AGS.Widget.Stack (StackProps, stack, stack') as Exports
 import AGS.Widget.Window (Window, WindowProps, window) as Exports
 import Effect (Effect)
 import Effect.Uncurried

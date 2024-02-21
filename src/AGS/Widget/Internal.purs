@@ -1,9 +1,9 @@
 module AGS.Widget.Internal
-  ( AGSWidgetProps
+  ( -- Widget utils
+    AGSWidgetProps
   , AnyF
   , Any
   , mkAny
-  , unsafeWidgetUpdate
   , propsToValueOrBindings
   , ToValueOrBinding
   , class ToValueOrBindingC
@@ -11,21 +11,84 @@ module AGS.Widget.Internal
   , MkWidget
   , MkWidgetWithUpdates
   , mkWidgetWithUpdates
+
+  -- Widgets
+  , box
+  , box'
+  , button
+  , button'
+  , centerBox
+  , centerBox'
+  , circularProgress
+  , circularProgress'
+  , entry
+  , entry'
+  , eventBox
+  , eventBox'
+  , icon
+  , icon'
+  , label
+  , label'
+  , menu
+  , menu'
+  , menuItem
+  , menuItem'
+  , overlay
+  , overlay'
+  , progressBar
+  , progressBar'
+  , revealer
+  , revealer'
+  , scrollable
+  , scrollable'
+  , slider
+  , slider'
+  , MarkPosition
+  , markPositionTop
+  , markPositionLeft
+  , markPositionRight
+  , markPositionBottom
+  , stack
+  , stack'
   ) where
 
 import Prelude
 
 import AGS.Binding (Binding, ValueOrBinding)
 import Data.Exists (Exists, mkExists)
+import Data.Maybe (Maybe, maybe)
 import Data.Tuple.Nested (type (/\), (/\))
 import Effect (Effect)
-import Effect.Uncurried (EffectFn1)
+import Effect.Uncurried (EffectFn1, mkEffectFn1)
+import Foreign.Object (Object)
+import Gtk.Actionable (GtkActionableProps)
+import Gtk.Activatable (GtkActivatableProps)
+import Gtk.Box (GtkBoxProps)
+import Gtk.Button (GtkButtonProps)
+import Gtk.Container (GtkContainerProps)
+import Gtk.Entry (GtkEntryProps)
+import Gtk.Image (GtkImageProps)
+import Gtk.Label (GtkLabelProps)
+import Gtk.Menu (GtkMenuProps)
+import Gtk.MenuItem (GtkMenuItemProps)
+import Gtk.MenuShell (GtkMenuShellProps)
+import Gtk.Misc (GtkMiscProps)
+import Gtk.Orientable (GtkOrientableProps)
+import Gtk.ProgressBar (GtkProgressBarProps)
+import Gtk.Range (GtkRangeProps)
+import Gtk.Revealer (GtkRevealerProps)
+import Gtk.Scale (GtkScaleProps)
+import Gtk.ScrollType (GtkScrollType)
+import Gtk.ScrolledWindow (GtkScrolledWindowProps)
+import Gtk.Stack (GtkStackProps)
 import Gtk.Widget (GtkWidgetProps, Widget)
 import Heterogeneous.Mapping (class HMap, class Mapping, hmap)
 import Prim.Row (class Union)
 import Record.Studio.Keys (class Keys, keys)
+import Record.Unsafe as RU
 import Type.Proxy (Proxy(..))
 import Type.Row (type (+))
+import Unsafe.Coerce (unsafeCoerce)
 import Untagged.Union (asOneOf)
 
 type AGSWidgetProps r =
@@ -49,7 +112,7 @@ type Any = Exists AnyF
 mkAny ∷ ∀ a. a → Any
 mkAny = mkExists <<< AnyF
 
--- * Utils for widget construction
+-- *** Utils for widget construction
 
 class ToValueOrBindingC a b | a → b where
   toValueOrBinding ∷ a → ValueOrBinding b
@@ -106,7 +169,7 @@ mkWidgetWithUpdates ctor props = widget /\ update
   widget = ctor props
   update = unsafeWidgetUpdate @props widget
 
--- * Utils for widgets updates
+-- *** Utils for widgets updates
 
 unsafeWidgetUpdate
   ∷ ∀ @r
@@ -125,4 +188,387 @@ unsafeGetWidgetProps = unsafeGetwidgetPropsImpl (keys (Proxy @r))
 
 foreign import unsafeGetwidgetPropsImpl ∷ ∀ r. Array String → Widget → Record r
 foreign import unsafeUpdateWidgetProps ∷ ∀ r. Record r → Widget → Effect Unit
+
+-- *** Widgets
+
+foreign import boxImpl ∷ Record (BoxProps ()) → Widget
+foreign import buttonImpl ∷ Record (ButtonProps ()) → Widget
+foreign import centerBoxImpl ∷ Record (CenterBoxProps ()) → Widget
+foreign import circularProgressImpl ∷ Record (CircularProgressProps ()) → Widget
+foreign import entryImpl ∷ Record (EntryProps ()) → Widget
+foreign import eventBoxImpl ∷ Record (EventBoxProps ()) → Widget
+foreign import iconImpl ∷ Record (IconProps ()) → Widget
+foreign import labelImpl ∷ Record (LabelProps ()) → Widget
+foreign import menuImpl ∷ Record (MenuProps ()) → Widget
+foreign import menuItemImpl ∷ Record (MenuItemProps ()) → Widget
+foreign import overlayImpl ∷ Record (OverlayProps ()) → Widget
+foreign import progressBarImpl ∷ Record (ProgressBarProps ()) → Widget
+foreign import revealerImpl ∷ Record (RevealerProps ()) → Widget
+foreign import scrollableImpl ∷ Record (ScrollableProps ()) → Widget
+foreign import sliderImpl ∷ Record (SliderProps ()) → Widget
+foreign import stackImpl ∷ Record (StackProps ()) → Widget
+
+-- * Box
+
+type BoxProps r =
+  AGSWidgetProps
+    + GtkContainerProps
+    + GtkOrientableProps
+    + GtkBoxProps
+    +
+      ( vertical ∷ ValueOrBinding Boolean
+      , children ∷ ValueOrBinding (Array Widget)
+      | r
+      )
+
+box ∷ MkWidget (BoxProps ())
+box = boxImpl <<< unsafeCoerce <<< propsToValueOrBindings @(BoxProps ())
+
+box' ∷ MkWidgetWithUpdates (BoxProps ())
+box' = mkWidgetWithUpdates box
+
+-- * Button
+
+type ButtonProps r =
+  AGSWidgetProps
+    + GtkContainerProps
+    + GtkButtonProps
+    +
+      ( child ∷ ValueOrBinding Widget
+      , onClicked ∷ ValueOrBinding (Effect Unit)
+      , onPrimaryClick ∷ ValueOrBinding (Effect Unit)
+      , onSecondaryClick ∷ ValueOrBinding (Effect Unit)
+      , onMiddleClick ∷ ValueOrBinding (Effect Unit)
+      , onPrimaryClickRelease ∷ ValueOrBinding (Effect Unit)
+      , onSecondaryClickRelease ∷ ValueOrBinding (Effect Unit)
+      , onMiddleClickRelease ∷ ValueOrBinding (Effect Unit)
+      , onHover ∷ ValueOrBinding (Effect Unit)
+      , onHoverLost ∷ ValueOrBinding (Effect Unit)
+      , onScrollUp ∷ ValueOrBinding (Effect Unit)
+      , onScrollDown ∷ ValueOrBinding (Effect Unit)
+      | r
+      )
+
+button ∷ MkWidget (ButtonProps ())
+button = buttonImpl
+  <<< unsafeCoerce
+  <<< propsToValueOrBindings @(ButtonProps ())
+
+button' ∷ MkWidgetWithUpdates (ButtonProps ())
+button' = mkWidgetWithUpdates button
+
+-- * CenterBox
+
+type CenterBoxProps r =
+  BoxProps
+    ( startWidget ∷ ValueOrBinding Widget
+    , centerWidget ∷ ValueOrBinding Widget
+    , endWidget ∷ ValueOrBinding Widget
+    | r
+    )
+
+centerBox ∷ MkWidget (CenterBoxProps ())
+centerBox = centerBoxImpl
+  <<< unsafeCoerce
+  <<< propsToValueOrBindings @(CenterBoxProps ())
+
+centerBox' ∷ MkWidgetWithUpdates (CenterBoxProps ())
+centerBox' = mkWidgetWithUpdates centerBox
+
+-- * CircularProgress
+
+type CircularProgressProps r =
+  AGSWidgetProps
+    + GtkContainerProps
+    +
+      ( startAt ∷ ValueOrBinding Number
+      , endAt ∷ ValueOrBinding Number
+      , inverted ∷ ValueOrBinding Boolean
+      , rounded ∷ ValueOrBinding Boolean
+      , value ∷ ValueOrBinding Number
+      | r
+      )
+
+circularProgress ∷ MkWidget (CircularProgressProps ())
+circularProgress = circularProgressImpl
+  <<< unsafeCoerce
+  <<< propsToValueOrBindings @(CircularProgressProps ())
+
+circularProgress' ∷ MkWidgetWithUpdates (CircularProgressProps ())
+circularProgress' = mkWidgetWithUpdates circularProgress
+
+-- * Entry
+
+type EntryProps r =
+  AGSWidgetProps
+    + GtkEntryProps
+    +
+      ( onChange ∷ ValueOrBinding (EffectFn1 Widget Unit)
+      , onAccept ∷ ValueOrBinding (EffectFn1 Widget Unit)
+      | r
+      )
+
+entry ∷ MkWidget (EntryProps ())
+entry = entryImpl <<< unsafeCoerce <<< propsToValueOrBindings @(EntryProps ())
+
+entry' ∷ MkWidgetWithUpdates (EntryProps ())
+entry' = mkWidgetWithUpdates entry
+
+-- * EventBox
+
+type EventBoxProps r =
+  AGSWidgetProps
+    + GtkContainerProps
+    +
+      ( onPrimaryClick ∷ ValueOrBinding (Effect Unit)
+      , onSecondaryClick ∷ ValueOrBinding (Effect Unit)
+      , onMiddleClick ∷ ValueOrBinding (Effect Unit)
+      , onPrimaryClickRelease ∷ ValueOrBinding (Effect Unit)
+      , onSecondaryClickRelease ∷ ValueOrBinding (Effect Unit)
+      , onMiddleClickRelease ∷ ValueOrBinding (Effect Unit)
+      , onHover ∷ ValueOrBinding (Effect Unit)
+      , onHoverLost ∷ ValueOrBinding (Effect Unit)
+      , onScrollUp ∷ ValueOrBinding (Effect Unit)
+      , onScrollDown ∷ ValueOrBinding (Effect Unit)
+      | r
+      )
+
+eventBox ∷ MkWidget (EventBoxProps ())
+eventBox = eventBoxImpl
+  <<< unsafeCoerce
+  <<< propsToValueOrBindings @(EventBoxProps ())
+
+eventBox' ∷ MkWidgetWithUpdates (EventBoxProps ())
+eventBox' = mkWidgetWithUpdates eventBox
+
+-- * Icon
+
+type IconProps r =
+  AGSWidgetProps
+    + GtkMiscProps
+    + GtkImageProps
+    +
+      ( icon ∷ ValueOrBinding String
+      , size ∷ ValueOrBinding Number
+      | r
+      )
+
+icon ∷ MkWidget (IconProps ())
+icon = iconImpl <<< unsafeCoerce <<< propsToValueOrBindings @(IconProps ())
+
+icon' ∷ MkWidgetWithUpdates (IconProps ())
+icon' = mkWidgetWithUpdates icon
+
+-- * Label
+
+type LabelProps r =
+  AGSWidgetProps
+    + GtkLabelProps
+    +
+      ( justification ∷ ValueOrBinding String {- TODO make it a proper type -}
+      , truncate ∷ ValueOrBinding String {- TODO make it a proper type -}
+      | r
+      )
+
+label ∷ MkWidget (LabelProps ())
+label = labelImpl <<< unsafeCoerce <<< propsToValueOrBindings @(LabelProps ())
+
+label' ∷ MkWidgetWithUpdates (LabelProps ())
+label' = mkWidgetWithUpdates label
+
+-- * Menu
+
+type MenuProps r =
+  AGSWidgetProps
+    + GtkContainerProps
+    + GtkMenuProps Widget
+    + GtkMenuShellProps
+    +
+      ( children ∷ ValueOrBinding (Array Widget)
+      , onPopup ∷ ValueOrBinding (Effect Unit)
+      , onMoveScroll ∷ ValueOrBinding (EffectFn1 GtkScrollType Unit)
+      | r
+      )
+
+menu ∷ MkWidget (MenuProps ())
+menu = menuImpl <<< unsafeCoerce <<< propsToValueOrBindings @(MenuProps ())
+
+menu' ∷ MkWidgetWithUpdates (MenuProps ())
+menu' = mkWidgetWithUpdates menu
+
+-- * MenuItem
+
+type MenuItemProps r =
+  AGSWidgetProps
+    + GtkActionableProps
+    + GtkActivatableProps
+    + GtkContainerProps
+    -- should be somehow constrained to `Menu` rather than all widgets
+    + GtkMenuItemProps Widget
+    +
+      ( child ∷ ValueOrBinding Widget
+      , onActivate ∷ ValueOrBinding (Effect Boolean)
+      , onSelect ∷ ValueOrBinding (Effect Boolean)
+      , onDeselect ∷ ValueOrBinding (Effect Boolean)
+      | r
+      )
+
+menuItem ∷ MkWidget (MenuItemProps ())
+menuItem = menuItemImpl
+  <<< unsafeCoerce
+  <<< propsToValueOrBindings @(MenuItemProps ())
+
+menuItem' ∷ MkWidgetWithUpdates (MenuItemProps ())
+menuItem' = mkWidgetWithUpdates menuItem
+
+-- * Overlay
+
+type OverlayProps r =
+  AGSWidgetProps
+    +
+      ( child ∷ ValueOrBinding Widget
+      , overlays ∷ ValueOrBinding (Array Widget)
+      , passThrough ∷ ValueOrBinding Boolean
+      | r
+      )
+
+overlay ∷ MkWidget (OverlayProps ())
+overlay = overlayImpl
+  <<< unsafeCoerce
+  <<< propsToValueOrBindings @(OverlayProps ())
+
+overlay' ∷ MkWidgetWithUpdates (OverlayProps ())
+overlay' = mkWidgetWithUpdates overlay
+
+-- * ProgressBar
+
+type ProgressBarProps r =
+  AGSWidgetProps
+    + GtkOrientableProps
+    + GtkProgressBarProps
+    +
+      ( vertical ∷ ValueOrBinding Boolean
+      , value ∷ ValueOrBinding Number
+      | r
+      )
+
+progressBar ∷ MkWidget (ProgressBarProps ())
+progressBar = progressBarImpl
+  <<< unsafeCoerce
+  <<< propsToValueOrBindings @(ProgressBarProps ())
+
+progressBar' ∷ MkWidgetWithUpdates (ProgressBarProps ())
+progressBar' = mkWidgetWithUpdates progressBar
+
+-- * Revealer
+
+type RevealerProps r =
+  AGSWidgetProps
+    + GtkContainerProps
+    + GtkRevealerProps
+    + r
+
+revealer ∷ MkWidget (RevealerProps ())
+revealer = revealerImpl <<< unsafeCoerce
+
+revealer' ∷ MkWidgetWithUpdates (RevealerProps ())
+revealer' = mkWidgetWithUpdates revealer
+
+-- * Scrollable
+
+type ScrollableProps r =
+  AGSWidgetProps
+    + GtkScrolledWindowProps
+    + GtkContainerProps
+    +
+      ( hscroll ∷ ValueOrBinding String {- TODO make it a proper type -}
+      , vscroll ∷ ValueOrBinding String {- TODO make it a proper type -}
+      | r
+      )
+
+scrollable ∷ MkWidget (ScrollableProps ())
+scrollable = scrollableImpl
+  <<< unsafeCoerce
+  <<< propsToValueOrBindings @(ScrollableProps ())
+
+scrollable' ∷ MkWidgetWithUpdates (ScrollableProps ())
+scrollable' = mkWidgetWithUpdates scrollable
+
+-- * Slider
+
+foreign import data MarkPosition ∷ Type
+
+markPositionTop = unsafeCoerce "top" ∷ MarkPosition
+markPositionLeft = unsafeCoerce "left" ∷ MarkPosition
+markPositionRight = unsafeCoerce "right" ∷ MarkPosition
+markPositionBottom = unsafeCoerce "bottom" ∷ MarkPosition
+
+type Mark =
+  { at ∷ Number
+  , label ∷ Maybe String
+  , position ∷ Maybe MarkPosition
+  }
+
+type SliderProps r =
+  AGSWidgetProps
+    + GtkOrientableProps
+    + GtkScaleProps
+    + GtkRangeProps
+    +
+      ( vertical ∷ ValueOrBinding Boolean
+      , value ∷ ValueOrBinding Number
+      , min ∷ ValueOrBinding Number
+      , max ∷ ValueOrBinding Number
+      , marks ∷ ValueOrBinding (Array Mark)
+      , onChange ∷ ValueOrBinding (Number → Effect Unit)
+      | r
+      )
+
+slider ∷ MkWidget (SliderProps ())
+slider = sliderImpl
+  <<< unsafeCoerce
+  <<< propsToValueOrBindings @(SliderProps ())
+  <<< prepare
+
+  where
+  prepare r =
+    r
+      #
+        ( if RU.unsafeHas "marks" r then
+            RU.unsafeSet "marks"
+              (prepareMark `map @Array` RU.unsafeGet "marks" r)
+          else
+            identity
+        )
+      #
+        ( if RU.unsafeHas "onChange" r then
+            RU.unsafeSet "onChange"
+              (mkEffectFn1 \{ value } → RU.unsafeGet "onChange" r value)
+          else
+            identity
+        )
+
+  prepareMark { at, label: markLabel, position } =
+    [ at ] <> maybe [] unsafeCoerce markLabel <> maybe [] unsafeCoerce position
+
+slider' ∷ MkWidgetWithUpdates (SliderProps ())
+slider' = mkWidgetWithUpdates slider
+
+-- * Stack
+
+type StackProps r =
+  AGSWidgetProps
+    + GtkContainerProps
+    + GtkStackProps Widget
+    +
+      ( children ∷ ValueOrBinding (Object Widget)
+      , shown ∷ ValueOrBinding String
+      | r
+      )
+
+stack ∷ MkWidget (StackProps ())
+stack = stackImpl <<< unsafeCoerce <<< propsToValueOrBindings @(StackProps ())
+
+stack' ∷ MkWidgetWithUpdates (StackProps ())
+stack' = mkWidgetWithUpdates stack
 
