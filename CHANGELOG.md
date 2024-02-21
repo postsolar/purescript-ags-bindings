@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Update AGS and integrate recent changes (up to and incl. 5e3f479) (#8)
+
+- Amend the types of some fields of `Mpris.PlayerRecord` (#8)
+Now instead of `Nullable a` and `UndefinedOr a`, all fields which are not guaranteed to be present are `Maybe a`.
+
+- Fix implementation of `Mpris.matchPlayer` (#8)
+
+- Fix implementation of `Mpris.fromPlayer` (#8)
+
 - Remove the need to wrap widget values with `asOneOf` (#7)
 Any of the input record fields can now be either `a` or `Binding a`, as long as props of the widget have that field as `ValueOrBinding a`.
 

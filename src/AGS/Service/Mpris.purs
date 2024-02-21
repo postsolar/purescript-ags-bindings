@@ -6,6 +6,9 @@ module AGS.Service.Mpris
   , BusName
   , Player
   , PlayerRecord
+  , PlayerRecordR
+  , MprisMetadata
+  , MprisMetadataF
   , fromPlayer
   , playPause
   , play
@@ -24,8 +27,17 @@ import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2)
-import GObject (class GObjectSignal, HandlerID, unsafeConnect)
+import GObject
+  ( class GObjectSignal
+  , HandlerID
+  , unsafeConnect
+  , unsafeCopyGObjectProps
+  )
+import Record as R
+import Record.Studio.MapKind (mapRecordKind)
+import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
+import Untagged.Union (UndefinedOr, uorToMaybe)
 
 -- *** Mpris
 
@@ -71,6 +83,7 @@ instance
 
 foreign import players ∷ Effect (Array Player)
 
+-- | Returns `Player` which has given string in its bus name.
 matchPlayer ∷ String → Effect (Maybe Player)
 matchPlayer = map toMaybe <<< matchPlayerImpl
 
@@ -80,34 +93,74 @@ foreign import matchPlayerImpl ∷ String → Effect (Nullable Player)
 
 newtype BusName = BusName String
 
-type PlayerRecord =
-  { "bus-name" ∷ String
+type PlayerRecord = Record PlayerRecordR
+
+type PlayerRecordR =
+  ( "bus-name" ∷ String
   , "can-go-next" ∷ Boolean
   , "can-go-prev" ∷ Boolean
   , "can-play" ∷ Boolean
-  , "cover-path" ∷ String
+  , "cover-path" ∷ Maybe String
   , entry ∷ String
   , identity ∷ String
   , length ∷ Int
-  , "loop-status" ∷ Nullable Boolean
+  , "loop-status" ∷ Maybe Boolean
+  , metadata ∷ MprisMetadata
   , name ∷ String
   , "play-back-status" ∷ String
   , position ∷ Int
-  , "shuffle-status" ∷ Nullable Boolean
+  , "shuffle-status" ∷ Maybe Boolean
   , "track-artists" ∷ Array String
   , "track-cover-url" ∷ String
   , "track-title" ∷ String
+  , "track-album" ∷ String
   , trackid ∷ String
   , volume ∷ Int
-  }
+  )
 
 foreign import data Player ∷ Type
+
+type MprisMetadata = MprisMetadataF Maybe
+
+type MprisMetadataF f =
+  { "mpris:trackid" ∷ f String
+  , "mpris:length" ∷ f Number
+  , "mpris:artUrl" ∷ f String
+  , "xesam:album" ∷ f String
+  , "xesam:albumArtist" ∷ f String
+  , "xesam:artist" ∷ f (Array String)
+  , "xesam:asText" ∷ f String
+  , "xesam:audioBPM" ∷ f Number
+  , "xesam:autoRating" ∷ f Number
+  , "xesam:comment" ∷ f (Array String)
+  , "xesam:composer" ∷ f (Array String)
+  , "xesam:contentCreated" ∷ f String
+  , "xesam:discNumber" ∷ f Number
+  , "xesam:firstUsed" ∷ f String
+  , "xesam:genre" ∷ f (Array String)
+  , "xesam:lastUsed" ∷ f String
+  , "xesam:lyricist" ∷ f (Array String)
+  , "xesam:title" ∷ f String
+  , "xesam:trackNumber" ∷ f Number
+  , "xesam:url" ∷ f String
+  , "xesam:useCount" ∷ f Number
+  , "xesam:userRating" ∷ f Number
+  }
 
 -- * Props and bindings
 
 -- | Convert a `Player` to a record.
 fromPlayer ∷ Player → PlayerRecord
-fromPlayer = unsafeCoerce
+fromPlayer = unsafeCopyGObjectProps @PlayerRecordR
+  >>> unsafeCoerce
+  >>> R.modify (Proxy @"metadata") fromForeignMetadata
+  >>> R.modify (Proxy @"cover-path") uorToMaybe
+  >>> R.modify (Proxy @"shuffle-status") toMaybe
+  >>> R.modify (Proxy @"loop-status") toMaybe
+
+  where
+  fromForeignMetadata ∷ MprisMetadataF UndefinedOr → MprisMetadata
+  fromForeignMetadata = mapRecordKind uorToMaybe
 
 -- the dbus name that starts with org.mpris.MediaPlayer2
 instance BindProp Player "bus-name" String where
@@ -130,6 +183,9 @@ instance BindProp Player "trackid" String where
 
 instance BindProp Player "track-artists" (Array String) where
   bindProp o = unsafeBindProp @"track-artists" o
+
+instance BindProp Player "track-album" String where
+  bindProp o = unsafeBindProp @"track-album" o
 
 instance BindProp Player "track-title" String where
   bindProp o = unsafeBindProp @"track-title" o

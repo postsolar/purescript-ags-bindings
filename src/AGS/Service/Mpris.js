@@ -1,7 +1,5 @@
 const M = await Service.import('mpris')
 
-// *** Mpris
-
 export const bindMpris =
   prop => () =>
     M.bind(prop)
@@ -17,4 +15,8 @@ export const connectMpris =
 export const players =
   () =>
     M.players
+
+export const matchPlayerImpl =
+  name => () =>
+    M.getPlayer(name)
 
