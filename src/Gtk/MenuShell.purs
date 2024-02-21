@@ -1,7 +1,9 @@
 module Gtk.MenuShell where
 
+import AGS.Binding (ValueOrBinding)
+
 type GtkMenuShellProps r =
-  ( takeFocus ∷ Boolean
+  ( takeFocus ∷ ValueOrBinding Boolean
   | r
   )
 

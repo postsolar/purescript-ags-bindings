@@ -1,5 +1,7 @@
 module Gtk.Stack where
 
+import AGS.Binding (ValueOrBinding)
+
 foreign import data GtkStackTransitionType ∷ Type
 
 foreign import transitions
@@ -27,14 +29,14 @@ foreign import transitions
 
 -- Type parameter `a` is implied to be `Gtk.Widget` or anything that extends it
 type GtkStackProps a r =
-  ( hhomogeneous ∷ Boolean
-  , homogeneous ∷ Boolean
-  , interpolateSize ∷ Boolean
-  , transitionDuration ∷ Number
-  , transitionRunning ∷ Boolean
-  , transitionType ∷ GtkStackTransitionType
-  , vhomogeneous ∷ Boolean
-  , visibleChild ∷ a
-  , visibleChildName ∷ String
+  ( hhomogeneous ∷ ValueOrBinding Boolean
+  , homogeneous ∷ ValueOrBinding Boolean
+  , interpolateSize ∷ ValueOrBinding Boolean
+  , transitionDuration ∷ ValueOrBinding Number
+  , transitionRunning ∷ ValueOrBinding Boolean
+  , transitionType ∷ ValueOrBinding GtkStackTransitionType
+  , vhomogeneous ∷ ValueOrBinding Boolean
+  , visibleChild ∷ ValueOrBinding a
+  , visibleChildName ∷ ValueOrBinding String
   | r
   )

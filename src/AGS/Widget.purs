@@ -13,72 +13,73 @@ import AGS.Binding
   , overBoth
   , overValue
   ) as Exports
-import AGS.Widget.Box (BoxProps, UpdateBoxProps, box, box') as Exports
-import AGS.Widget.Button (ButtonProps, UpdateButtonProps, button, button') as Exports
-import AGS.Widget.CenterBox
-  ( CenterBoxProps
-  , UpdateCenterBoxProps
-  , centerBox
-  , centerBox'
-  ) as Exports
-import AGS.Widget.CircularProgress
-  ( CircularProgressProps
-  , UpdateCircularProgressProps
-  , circularProgress
-  , circularProgress'
-  ) as Exports
-import AGS.Widget.Entry (EntryProps, UpdateEntryProps, entry, entry') as Exports
-import AGS.Widget.EventBox
-  ( EventBoxProps
-  , UpdateEventBoxProps
-  , eventBox
-  , eventBox'
-  ) as Exports
-import AGS.Widget.Icon (IconProps, UpdateIconProps, icon, icon') as Exports
 import AGS.Widget.Internal
-  ( AGSWidgetProps
+  ( class ToValueOrBindingC
+  , AGSWidgetProps
   , Any
   , AnyF
-  , mkAny
-  , unsafeWidgetUpdate
-  ) as Exports
-import AGS.Widget.Label (LabelProps, label, label') as Exports
-import AGS.Widget.Menu (MenuProps, UpdateMenuProps, menu, menu') as Exports
-import AGS.Widget.Menu.Item (MenuItem, MenuItemProps, menuItem, menuItemImpl) as Exports
-import AGS.Widget.Overlay (OverlayProps, UpdateOverlayProps, overlay, overlay') as Exports
-import AGS.Widget.ProgressBar
-  ( ProgressBarProps
-  , UpdateProgressBarProps
-  , progressBar
-  , progressBar'
-  ) as Exports
-import AGS.Widget.Revealer
-  ( GtkRevealerTransitionType
-  , RevealerProps
-  , UpdateRevealerProps
-  , revealer
-  , revealer'
-  , transitions
-  ) as Exports
-import AGS.Widget.Scrollable
-  ( ScrollableProps
-  , UpdateScrollableProps
-  , scrollable
-  , scrollable'
-  ) as Exports
-import AGS.Widget.Slider
-  ( Mark
+  , BoxProps
+  , ButtonProps
+  , CenterBoxProps
+  , CircularProgressProps
+  , EntryProps
+  , EventBoxProps
+  , IconProps
+  , LabelProps
+  , Mark
   , MarkPosition
+  , MenuItemProps
+  , MenuProps
+  , MkWidget
+  , MkWidgetWithUpdates
+  , OverlayProps
+  , ProgressBarProps
+  , RevealerProps
+  , ScrollableProps
   , SliderProps
-  , UpdateSliderProps
+  , StackProps
+  , ToValueOrBinding
+  , box
+  , box'
+  , button
+  , button'
+  , centerBox
+  , centerBox'
+  , circularProgress
+  , circularProgress'
+  , entry
+  , entry'
+  , eventBox
+  , eventBox'
+  , icon
+  , icon'
+  , label
+  , label'
   , markPositionBottom
   , markPositionLeft
   , markPositionRight
   , markPositionTop
+  , menu
+  , menu'
+  , menuItem
+  , menuItem'
+  , mkAny
+  , overlay
+  , overlay'
+  , progressBar
+  , progressBar'
+  , propsToValueOrBindings
+  , revealer
+  , revealer'
+  , scrollable
+  , scrollable'
   , slider
   , slider'
+  , stack
+  , stack'
+  , toValueOrBinding
+  , withUpdates
   ) as Exports
-import AGS.Widget.Stack (StackProps, stack, stack') as Exports
 import AGS.Widget.Window (Window, WindowProps, window) as Exports
 import Effect (Effect)
 import Effect.Uncurried

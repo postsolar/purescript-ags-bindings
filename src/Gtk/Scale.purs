@@ -1,10 +1,12 @@
 module Gtk.Scale where
 
+import AGS.Binding (ValueOrBinding)
+
 type GtkScaleProps r =
-  ( digits ∷ Number
-  , drawValue ∷ Boolean
-  , hasOrigin ∷ Boolean
-  -- , valuePos ∷ Gtk.PositionType
+  ( digits ∷ ValueOrBinding Number
+  , drawValue ∷ ValueOrBinding Boolean
+  , hasOrigin ∷ ValueOrBinding Boolean
+  -- , valuePos ∷ ValueOrBinding Gtk.PositionType
   | r
   )
 
