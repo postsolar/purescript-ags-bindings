@@ -6,10 +6,6 @@ export const set =
   f => v => () =>
     v.setValue(f(v.value))
 
-export const bindValue =
-  v =>
-    v.bind("value")
-
 export const store =
   v =>
     Variable(v)

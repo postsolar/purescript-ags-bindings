@@ -12,7 +12,7 @@ module AGS.Variable
 
 import Prelude
 
-import AGS.Binding (Binding)
+import AGS.Binding (class BindProp, Binding, bindProp)
 import Data.Time.Duration (Milliseconds)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1)
@@ -32,8 +32,16 @@ foreign import get ∷ ∀ a. Variable a → Effect a
 -- | Update the value of a variable.
 foreign import set ∷ ∀ a. (a → a) → Variable a → Effect Unit
 
+type VariableProps ∷ Type → Row Type
+type VariableProps a =
+  ( value ∷ a
+  )
+
+instance BindProp (Variable a) (VariableProps a)
+
 -- | Bind the value of a variable.
-foreign import bindValue ∷ ∀ a. Variable a → Binding a
+bindValue ∷ ∀ a. Variable a → Binding a
+bindValue = bindProp @"value"
 
 -- | Create a variable.
 foreign import store ∷ ∀ a. a → Variable a

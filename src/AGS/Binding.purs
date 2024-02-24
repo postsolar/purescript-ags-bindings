@@ -2,7 +2,6 @@ module AGS.Binding
   ( Binding
   , class BindProp
   , bindProp
-  , unsafeBindProp
   , ValueOrBinding
   , overValue
   , overBinding
@@ -14,6 +13,7 @@ import Prelude
 import Control.Apply (lift2)
 import Data.Either (either)
 import Data.Symbol (class IsSymbol, reflectSymbol)
+import Prim.Row as R
 import Type.Proxy (Proxy(..))
 import Untagged.TypeCheck (class HasRuntimeType)
 import Untagged.Union (OneOf, asOneOf, toEither1)
@@ -56,14 +56,19 @@ foreign import applyBinding ∷ ∀ a b. Binding (a → b) → Binding a → Bin
 foreign import pureBinding ∷ ∀ a. a → Binding a
 foreign import bindBinding ∷ ∀ a b. Binding a → (a → Binding b) → Binding b
 
-class BindProp ∷ ∀ k. Type → k → Type → Constraint
-class BindProp o p t | o p → t where
-  bindProp ∷ o → Binding t
+class BindProp ∷ Type → Row Type → Constraint
+class BindProp object props | object → props
 
-unsafeBindProp ∷ ∀ @p @o @t. IsSymbol p ⇒ BindProp o p t ⇒ o → Binding t
-unsafeBindProp = unsafeBindPropImpl (reflectSymbol (Proxy @p))
+bindProp
+  ∷ ∀ @prop @obj ty props rt
+  . R.Cons prop ty rt props
+  ⇒ IsSymbol prop
+  ⇒ BindProp obj props
+  ⇒ obj
+  → Binding ty
+bindProp = unsafeBindProp (reflectSymbol (Proxy @prop))
 
-foreign import unsafeBindPropImpl ∷ ∀ o t. String → o → Binding t
+foreign import unsafeBindProp ∷ ∀ o t. String → o → Binding t
 
 -- * ValueOrBinding
 

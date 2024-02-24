@@ -1,4 +1,4 @@
-export const unsafeBindPropImpl =
+export const unsafeBindProp =
   prop => object =>
     object.bind(prop)
 
