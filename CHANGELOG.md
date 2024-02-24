@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add `Utils.lookupIcon` and `Gtk.IconInfo.filename` (#6)
+
 - Add `Binding.overBoth'` and remove constraints from `overValue`, `overBinding` and `overBoth`
 
 - Add `Widget.destroy`
