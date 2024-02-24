@@ -96,7 +96,6 @@ import Effect.Uncurried
 import Gtk.Widget (Widget)
 import Gtk.Widget (Widget) as Exports
 import Prelude (Unit)
-import Unsafe.Coerce (unsafeCoerce)
 import Untagged.Union (asOneOf) as Exports
 
 -- * Methods
