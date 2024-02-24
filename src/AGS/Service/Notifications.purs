@@ -1,10 +1,12 @@
 module AGS.Service.Notifications
   ( Notifications
+  , NotificationsSignals
   , Notification
   , NotificationID(..)
   , NotificationsOptions
   , NotificationRecord
   , NotificationPropsF
+  , NotificationsServiceProps
   , Action
   , ActionID(..)
   , ActionLabel(..)
@@ -36,6 +38,7 @@ import Data.Maybe (Maybe, fromJust)
 import Data.Newtype (class Newtype)
 import Data.Nullable (Nullable, toMaybe)
 import Data.Show.Generic (genericShow)
+import Data.Symbol (class IsSymbol, reflectSymbol)
 import Data.Time.Duration (Milliseconds(..))
 import Effect (Effect)
 import Effect.Aff.Compat (runEffectFn1)
@@ -59,25 +62,18 @@ foreign import data Notifications ∷ Service
 
 -- * Signals
 
-instance
-  ServiceConnect Notifications "changed" (Effect Unit)
-  where
-  connectService = connectNotifications "changed"
+type NotificationsSignals =
+  ( changed ∷ Effect Unit
+  , dismissed ∷ EffectFn1 NotificationID Unit
+  , notified ∷ EffectFn1 NotificationID Unit
+  , closed ∷ EffectFn1 NotificationID Unit
+  )
 
 instance
-  ServiceConnect Notifications "dismissed" (EffectFn1 NotificationID Unit)
+  IsSymbol prop ⇒
+  ServiceConnect Notifications prop NotificationsSignals cb
   where
-  connectService = connectNotifications "dismissed"
-
-instance
-  ServiceConnect Notifications "notified" (EffectFn1 NotificationID Unit)
-  where
-  connectService = connectNotifications "notified"
-
-instance
-  ServiceConnect Notifications "closed" (EffectFn1 NotificationID Unit)
-  where
-  connectService = connectNotifications "closed"
+  connectService = connectNotifications (reflectSymbol (Proxy @prop))
 
 foreign import disconnectNotifications
   ∷ HandlerID Notifications → Effect Unit
@@ -90,14 +86,16 @@ foreign import connectNotifications
 foreign import notifications ∷ Effect (Array Notification)
 foreign import popups ∷ Effect (Array Notification)
 
-instance BindServiceProp Notifications "popups" (Array Notification) where
-  bindServiceProp = bindNotifications "popups"
+type NotificationsServiceProps =
+  ( popups ∷ Array Notification
+  , notifications ∷ Array Notification
+  , dnd ∷ Boolean
+  )
 
-instance BindServiceProp Notifications "notifications" (Array Notification) where
-  bindServiceProp = bindNotifications "notifications"
-
-instance BindServiceProp Notifications "doNotDisturb" Boolean where
-  bindServiceProp = bindNotifications "dnd"
+instance
+  IsSymbol prop ⇒
+  BindServiceProp Notifications prop NotificationsServiceProps ty where
+  bindServiceProp = bindNotifications (reflectSymbol (Proxy @prop))
 
 foreign import bindNotifications ∷ ∀ a. String → Effect (Binding a)
 

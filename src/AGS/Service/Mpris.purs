@@ -1,5 +1,7 @@
 module AGS.Service.Mpris
   ( Mpris
+  , MprisSignals
+  , MprisServiceProps
   , disconnectMpris
   , players
   , matchPlayer
@@ -25,6 +27,7 @@ import AGS.Binding (class BindProp, Binding, unsafeBindProp)
 import AGS.Service (class BindServiceProp, class ServiceConnect, Service)
 import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe)
+import Data.Symbol (class IsSymbol, reflectSymbol)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2)
 import GObject
@@ -50,34 +53,26 @@ foreign import connectMpris ∷ ∀ f. String → f → Effect (HandlerID Mpris)
 
 foreign import bindMpris ∷ ∀ a. String → Effect (Binding a)
 
-instance BindServiceProp Mpris "players" (Array Player) where
-  bindServiceProp = bindMpris "players"
+type MprisServiceProps =
+  ( players ∷ Array Player
+  )
+
+instance IsSymbol prop ⇒ BindServiceProp Mpris prop MprisServiceProps ty where
+  bindServiceProp = bindMpris (reflectSymbol (Proxy @prop))
 
 -- * Signals
 
-instance
-  ServiceConnect Mpris
-    "changed"
-    (EffectFn1 { players ∷ Array Player } Unit) where
-  connectService = connectMpris "changed"
+type MprisSignals =
+  ( changed ∷ EffectFn1 { players ∷ Array Player } Unit
+  , "player-changed" ∷ EffectFn2 { players ∷ Array Player } BusName Unit
+  , "player-closed" ∷ EffectFn2 { players ∷ Array Player } BusName Unit
+  , "player-added" ∷ EffectFn2 { players ∷ Array Player } BusName Unit
+  )
 
 instance
-  ServiceConnect Mpris
-    "player-changed"
-    (EffectFn2 { players ∷ Array Player } BusName Unit) where
-  connectService = connectMpris "player-changed"
-
-instance
-  ServiceConnect Mpris
-    "player-closed"
-    (EffectFn2 { players ∷ Array Player } BusName Unit) where
-  connectService = connectMpris "player-closed"
-
-instance
-  ServiceConnect Mpris
-    "player-added"
-    (EffectFn2 { players ∷ Array Player } BusName Unit) where
-  connectService = connectMpris "player-added"
+  IsSymbol prop ⇒
+  ServiceConnect Mpris prop MprisSignals cb where
+  connectService = connectMpris (reflectSymbol (Proxy @prop))
 
 -- * Methods
 

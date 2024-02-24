@@ -8,7 +8,11 @@ module AGS.Service.Hyprland
   , Monitor'
   , Client'
   , Hyprland
+  , HyprlandSignals
+  , HyprlandServiceProps
   , HyprlandActive
+  , HyprlandActiveSignals
+  , HyprlandActiveServiceProps
   , disconnectHyprland
   , disconnectHyprlandActive
   , message
@@ -23,11 +27,13 @@ import Prelude
 import AGS.Binding (Binding)
 import AGS.Service (class BindServiceProp, class ServiceConnect, Service)
 import Data.Maybe (Maybe)
+import Data.Symbol (class IsSymbol, reflectSymbol)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Uncurried (EffectFn1, EffectFn2)
 import GObject (HandlerID)
 import Promise.Aff (Promise, toAffE)
+import Type.Proxy (Proxy(..))
 import Untagged.Union (UndefinedOr, uorToMaybe)
 
 foreign import data Hyprland ∷ Service
@@ -127,28 +133,28 @@ type Client' =
   , class ∷ String
   }
 
-instance BindServiceProp Hyprland "active" HyprlandActiveRecord where
-  bindServiceProp = bindHyprland "active"
+type HyprlandServiceProps =
+  ( active ∷ HyprlandActiveRecord
+  , monitors ∷ Array Monitor
+  , workspaces ∷ Array Workspace
+  , clients ∷ Array Client
+  )
 
-instance BindServiceProp Hyprland "monitors" (Array Monitor) where
-  bindServiceProp = bindHyprland "monitors"
-
-instance BindServiceProp Hyprland "workspaces" (Array Workspace) where
-  bindServiceProp = bindHyprland "workspaces"
-
-instance BindServiceProp Hyprland "clients" (Array Client) where
-  bindServiceProp = bindHyprland "clients"
+instance IsSymbol prop ⇒ BindServiceProp Hyprland prop HyprlandServiceProps ty where
+  bindServiceProp = bindHyprland (reflectSymbol (Proxy @prop))
 
 foreign import bindHyprland ∷ ∀ a. String → Effect (Binding a)
 
-instance BindServiceProp HyprlandActive "client" Client' where
-  bindServiceProp = bindHyprlandActive "client"
+type HyprlandActiveServiceProps =
+  ( client ∷ Client'
+  , workspace ∷ Workspace'
+  , monitor ∷ Monitor'
+  )
 
-instance BindServiceProp HyprlandActive "workspace" Workspace' where
-  bindServiceProp = bindHyprlandActive "workspace"
-
-instance BindServiceProp HyprlandActive "monitor" Monitor' where
-  bindServiceProp = bindHyprlandActive "monitor"
+instance
+  IsSymbol prop ⇒
+  BindServiceProp HyprlandActive prop HyprlandActiveServiceProps ty where
+  bindServiceProp = bindHyprlandActive (reflectSymbol (Proxy @prop))
 
 foreign import bindHyprlandActive ∷ ∀ a. String → Effect (Binding a)
 
@@ -157,48 +163,35 @@ foreign import bindHyprlandActive ∷ ∀ a. String → Effect (Binding a)
 foreign import disconnectHyprland ∷ HandlerID Hyprland → Effect Unit
 foreign import disconnectHyprlandActive ∷ HandlerID HyprlandActive → Effect Unit
 
-instance ServiceConnect Hyprland "event" (EffectFn2 String String Unit) where
-  connectService = connectHyprland "event"
+type HyprlandSignals =
+  ( event ∷ EffectFn2 String String Unit
+  , "urgent-window" ∷ EffectFn1 Int Unit
+  , "keyboard-layout" ∷ EffectFn2 String String Unit
+  , submap ∷ EffectFn1 String Unit
+  , "monitor-added" ∷ EffectFn1 Int Unit
+  , "monitor-removed" ∷ EffectFn1 Int Unit
+  , "workspace-added" ∷ EffectFn1 Int Unit
+  , "workspace-removed" ∷ EffectFn1 Int Unit
+  , "client-added" ∷ EffectFn1 String Unit
+  , "client-removed" ∷ EffectFn1 String Unit
+  , fullscreen ∷ EffectFn1 Boolean Unit
+  , changed ∷ Effect Unit
+  )
 
-instance ServiceConnect Hyprland "urgent-window" (EffectFn1 Int Unit) where
-  connectService = connectHyprland "urgent-window"
-
-instance
-  ServiceConnect Hyprland "keyboard-layout" (EffectFn2 String String Unit) where
-  connectService = connectHyprland "keyboard-layout"
-
-instance ServiceConnect Hyprland "submap" (EffectFn1 String Unit) where
-  connectService = connectHyprland "submap"
-
-instance ServiceConnect Hyprland "monitor-added" (EffectFn1 Int Unit) where
-  connectService = connectHyprland "monitor-added"
-
-instance ServiceConnect Hyprland "monitor-removed" (EffectFn1 Int Unit) where
-  connectService = connectHyprland "monitor-removed"
-
-instance ServiceConnect Hyprland "workspace-added" (EffectFn1 Int Unit) where
-  connectService = connectHyprland "workspace-added"
-
-instance ServiceConnect Hyprland "workspace-removed" (EffectFn1 Int Unit) where
-  connectService = connectHyprland "workspace-removed"
-
-instance ServiceConnect Hyprland "client-added" (EffectFn1 String Unit) where
-  connectService = connectHyprland "client-added"
-
-instance ServiceConnect Hyprland "client-removed" (EffectFn1 String Unit) where
-  connectService = connectHyprland "client-removed"
-
-instance ServiceConnect Hyprland "fullscreen" (EffectFn1 Boolean Unit) where
-  connectService = connectHyprland "fullscreen"
-
-instance ServiceConnect Hyprland "changed" (Effect Unit) where
-  connectService = connectHyprland "changed"
+instance IsSymbol prop ⇒ ServiceConnect Hyprland prop HyprlandSignals cb where
+  connectService = connectHyprland (reflectSymbol (Proxy @prop))
 
 foreign import connectHyprland
   ∷ ∀ f. String → f → Effect (HandlerID Hyprland)
 
-instance ServiceConnect HyprlandActive "changed" (Effect Unit) where
-  connectService = connectHyprlandActive "changed"
+type HyprlandActiveSignals =
+  ( changed ∷ Effect Unit
+  )
+
+instance
+  IsSymbol prop ⇒
+  ServiceConnect HyprlandActive prop HyprlandActiveSignals cb where
+  connectService = connectHyprlandActive (reflectSymbol (Proxy @prop))
 
 foreign import connectHyprlandActive
   ∷ ∀ f. String → f → Effect (HandlerID HyprlandActive)
