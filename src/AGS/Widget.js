@@ -8,3 +8,7 @@ export const withInterval =
       return
     }
 
+export const destroy =
+  widget => () =>
+    widget.destroy()
+
