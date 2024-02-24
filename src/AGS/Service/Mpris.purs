@@ -8,6 +8,7 @@ module AGS.Service.Mpris
   , BusName
   , Player
   , PlayerProps
+  , PlayerSignals
   , PlayerRecord
   , PlayerRecordR
   , MprisMetadata
