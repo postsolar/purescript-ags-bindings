@@ -10,7 +10,7 @@ export const disconnectMpris =
 
 export const connectMpris =
   signal => callback => () =>
-    M.connect(signal, callback)
+    M.connect(signal, (_, ...args) => callback(...args))
 
 export const players =
   () =>
