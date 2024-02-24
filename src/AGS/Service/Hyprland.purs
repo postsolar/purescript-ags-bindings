@@ -141,7 +141,7 @@ type HyprlandServiceProps =
   )
 
 instance IsSymbol prop ⇒ BindServiceProp Hyprland prop HyprlandServiceProps ty where
-  bindServiceProp = bindHyprland (reflectSymbol (Proxy @"prop"))
+  bindServiceProp = bindHyprland (reflectSymbol (Proxy @prop))
 
 foreign import bindHyprland ∷ ∀ a. String → Effect (Binding a)
 
@@ -154,7 +154,7 @@ type HyprlandActiveServiceProps =
 instance
   IsSymbol prop ⇒
   BindServiceProp HyprlandActive prop HyprlandActiveServiceProps ty where
-  bindServiceProp = bindHyprlandActive (reflectSymbol (Proxy @"prop"))
+  bindServiceProp = bindHyprlandActive (reflectSymbol (Proxy @prop))
 
 foreign import bindHyprlandActive ∷ ∀ a. String → Effect (Binding a)
 
