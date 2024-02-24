@@ -8,7 +8,9 @@ module AGS.Service.Hyprland
   , Monitor'
   , Client'
   , Hyprland
+  , HyprlandServiceProps
   , HyprlandActive
+  , HyprlandActiveServiceProps
   , disconnectHyprland
   , disconnectHyprlandActive
   , message
@@ -23,11 +25,13 @@ import Prelude
 import AGS.Binding (Binding)
 import AGS.Service (class BindServiceProp, class ServiceConnect, Service)
 import Data.Maybe (Maybe)
+import Data.Symbol (class IsSymbol, reflectSymbol)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Uncurried (EffectFn1, EffectFn2)
 import GObject (HandlerID)
 import Promise.Aff (Promise, toAffE)
+import Type.Proxy (Proxy(..))
 import Untagged.Union (UndefinedOr, uorToMaybe)
 
 foreign import data Hyprland ∷ Service
@@ -127,28 +131,28 @@ type Client' =
   , class ∷ String
   }
 
-instance BindServiceProp Hyprland "active" HyprlandActiveRecord where
-  bindServiceProp = bindHyprland "active"
+type HyprlandServiceProps =
+  ( active ∷ HyprlandActiveRecord
+  , monitors ∷ Array Monitor
+  , workspaces ∷ Array Workspace
+  , clients ∷ Array Client
+  )
 
-instance BindServiceProp Hyprland "monitors" (Array Monitor) where
-  bindServiceProp = bindHyprland "monitors"
-
-instance BindServiceProp Hyprland "workspaces" (Array Workspace) where
-  bindServiceProp = bindHyprland "workspaces"
-
-instance BindServiceProp Hyprland "clients" (Array Client) where
-  bindServiceProp = bindHyprland "clients"
+instance IsSymbol prop ⇒ BindServiceProp Hyprland prop HyprlandServiceProps ty where
+  bindServiceProp = bindHyprland (reflectSymbol (Proxy @"prop"))
 
 foreign import bindHyprland ∷ ∀ a. String → Effect (Binding a)
 
-instance BindServiceProp HyprlandActive "client" Client' where
-  bindServiceProp = bindHyprlandActive "client"
+type HyprlandActiveServiceProps =
+  ( client ∷ Client'
+  , workspace ∷ Workspace'
+  , monitor ∷ Monitor'
+  )
 
-instance BindServiceProp HyprlandActive "workspace" Workspace' where
-  bindServiceProp = bindHyprlandActive "workspace"
-
-instance BindServiceProp HyprlandActive "monitor" Monitor' where
-  bindServiceProp = bindHyprlandActive "monitor"
+instance
+  IsSymbol prop ⇒
+  BindServiceProp HyprlandActive prop HyprlandActiveServiceProps ty where
+  bindServiceProp = bindHyprlandActive (reflectSymbol (Proxy @"prop"))
 
 foreign import bindHyprlandActive ∷ ∀ a. String → Effect (Binding a)
 

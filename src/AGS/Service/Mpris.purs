@@ -1,5 +1,6 @@
 module AGS.Service.Mpris
   ( Mpris
+  , MprisServiceProps
   , disconnectMpris
   , players
   , matchPlayer
@@ -25,6 +26,7 @@ import AGS.Binding (class BindProp, Binding, unsafeBindProp)
 import AGS.Service (class BindServiceProp, class ServiceConnect, Service)
 import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe)
+import Data.Symbol (class IsSymbol, reflectSymbol)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2)
 import GObject
@@ -50,8 +52,12 @@ foreign import connectMpris ∷ ∀ f. String → f → Effect (HandlerID Mpris)
 
 foreign import bindMpris ∷ ∀ a. String → Effect (Binding a)
 
-instance BindServiceProp Mpris "players" (Array Player) where
-  bindServiceProp = bindMpris "players"
+type MprisServiceProps =
+  ( players ∷ Array Player
+  )
+
+instance IsSymbol prop ⇒ BindServiceProp Mpris prop MprisServiceProps ty where
+  bindServiceProp = bindMpris (reflectSymbol (Proxy @prop))
 
 -- * Signals
 

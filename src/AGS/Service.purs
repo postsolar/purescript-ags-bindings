@@ -16,13 +16,19 @@ import Effect.Uncurried
   )
 import GObject (HandlerID)
 import Prelude (Unit)
+import Prim.Row as R
 import Prim.TypeError as TE
 
 data Service
 
-class BindServiceProp ∷ ∀ k. Service → k → Type → Constraint
-class BindServiceProp s p a | s p → a where
-  bindServiceProp ∷ Effect (Binding a)
+class BindServiceProp ∷ Service → Symbol → Row Type → Type → Constraint
+class
+  BindServiceProp service prop props ty
+  | service → props
+  , service prop → ty
+  , props prop → ty
+  where
+  bindServiceProp ∷ ∀ rt. R.Cons prop ty rt props ⇒ Effect (Binding ty)
 
 class ServiceCallback ∷ Type → Constraint
 class ServiceCallback f

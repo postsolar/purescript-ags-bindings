@@ -5,6 +5,7 @@ module AGS.Service.Notifications
   , NotificationsOptions
   , NotificationRecord
   , NotificationPropsF
+  , NotificationsServiceProps
   , Action
   , ActionID(..)
   , ActionLabel(..)
@@ -36,6 +37,7 @@ import Data.Maybe (Maybe, fromJust)
 import Data.Newtype (class Newtype)
 import Data.Nullable (Nullable, toMaybe)
 import Data.Show.Generic (genericShow)
+import Data.Symbol (class IsSymbol, reflectSymbol)
 import Data.Time.Duration (Milliseconds(..))
 import Effect (Effect)
 import Effect.Aff.Compat (runEffectFn1)
@@ -90,14 +92,16 @@ foreign import connectNotifications
 foreign import notifications ∷ Effect (Array Notification)
 foreign import popups ∷ Effect (Array Notification)
 
-instance BindServiceProp Notifications "popups" (Array Notification) where
-  bindServiceProp = bindNotifications "popups"
+type NotificationsServiceProps =
+  ( popups ∷ Array Notification
+  , notifications ∷ Array Notification
+  , dnd ∷ Boolean
+  )
 
-instance BindServiceProp Notifications "notifications" (Array Notification) where
-  bindServiceProp = bindNotifications "notifications"
-
-instance BindServiceProp Notifications "doNotDisturb" Boolean where
-  bindServiceProp = bindNotifications "dnd"
+instance
+  IsSymbol prop ⇒
+  BindServiceProp Notifications prop NotificationsServiceProps ty where
+  bindServiceProp = bindNotifications (reflectSymbol (Proxy @prop))
 
 foreign import bindNotifications ∷ ∀ a. String → Effect (Binding a)
 

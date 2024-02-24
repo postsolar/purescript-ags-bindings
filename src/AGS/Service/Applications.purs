@@ -5,8 +5,10 @@ import Prelude
 import AGS.Binding (Binding)
 import AGS.Service (class BindServiceProp, Service)
 import Data.Nullable (Nullable)
+import Data.Symbol (class IsSymbol, reflectSymbol)
 import Effect (Effect)
 import Gio.DesktopAppInfo as Gio
+import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
 foreign import data Applications ∷ Service
@@ -20,8 +22,14 @@ foreign import list ∷ Effect (Array Application)
 
 foreign import bindApplications ∷ ∀ a. String → Effect (Binding a)
 
-instance BindServiceProp Applications "list" (Array Application) where
-  bindServiceProp = bindApplications "list"
+type ApplicationsServiceProps =
+  ( list ∷ Array Application
+  )
+
+instance
+  IsSymbol prop ⇒
+  BindServiceProp Applications prop ApplicationsServiceProps ty where
+  bindServiceProp = bindApplications (reflectSymbol (Proxy @prop))
 
 -- * Methods
 
