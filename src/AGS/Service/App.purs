@@ -1,5 +1,6 @@
 module AGS.Service.App
   ( App
+  , AppSignals
   , disconnectApp
   , addWindow
   , applyCss
@@ -19,9 +20,11 @@ import Prelude
 import AGS.Service (class ServiceConnect, Service)
 import AGS.Widget.Window (Window)
 import Data.Maybe (Maybe)
+import Data.Symbol (class IsSymbol, reflectSymbol)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn2)
 import GObject (HandlerID)
+import Type.Proxy (Proxy(..))
 import Untagged.Union (UndefinedOr, uorToMaybe)
 
 foreign import data App ∷ Service
@@ -37,14 +40,15 @@ foreign import windows ∷ Effect (Array Window)
 
 -- * Signals
 
+type AppSignals =
+  ( "config-parsed" ∷ Effect Unit
+  , "window-toggled" ∷ EffectFn2 String Boolean Unit
+  )
+
+instance IsSymbol prop ⇒ ServiceConnect App prop AppSignals cb where
+  connectService = connectApp (reflectSymbol (Proxy @prop))
+
 foreign import disconnectApp ∷ HandlerID App → Effect Unit
-
-instance ServiceConnect App "config-parsed" (Effect Unit) where
-  connectService = connectApp "config-parsed"
-
-instance ServiceConnect App "window-toggled" (EffectFn2 String Boolean Unit) where
-  connectService = connectApp "window-toggled"
-
 foreign import connectApp ∷ ∀ f. String → f → Effect (HandlerID App)
 
 -- * Methods

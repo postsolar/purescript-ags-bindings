@@ -1,5 +1,6 @@
 module AGS.Service.Notifications
   ( Notifications
+  , NotificationsSignals
   , Notification
   , NotificationID(..)
   , NotificationsOptions
@@ -61,25 +62,18 @@ foreign import data Notifications ∷ Service
 
 -- * Signals
 
-instance
-  ServiceConnect Notifications "changed" (Effect Unit)
-  where
-  connectService = connectNotifications "changed"
+type NotificationsSignals =
+  ( changed ∷ Effect Unit
+  , dismissed ∷ EffectFn1 NotificationID Unit
+  , notified ∷ EffectFn1 NotificationID Unit
+  , closed ∷ EffectFn1 NotificationID Unit
+  )
 
 instance
-  ServiceConnect Notifications "dismissed" (EffectFn1 NotificationID Unit)
+  IsSymbol prop ⇒
+  ServiceConnect Notifications prop NotificationsSignals cb
   where
-  connectService = connectNotifications "dismissed"
-
-instance
-  ServiceConnect Notifications "notified" (EffectFn1 NotificationID Unit)
-  where
-  connectService = connectNotifications "notified"
-
-instance
-  ServiceConnect Notifications "closed" (EffectFn1 NotificationID Unit)
-  where
-  connectService = connectNotifications "closed"
+  connectService = connectNotifications (reflectSymbol (Proxy @prop))
 
 foreign import disconnectNotifications
   ∷ HandlerID Notifications → Effect Unit

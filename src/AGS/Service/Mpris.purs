@@ -1,5 +1,6 @@
 module AGS.Service.Mpris
   ( Mpris
+  , MprisSignals
   , MprisServiceProps
   , disconnectMpris
   , players
@@ -61,29 +62,17 @@ instance IsSymbol prop ⇒ BindServiceProp Mpris prop MprisServiceProps ty where
 
 -- * Signals
 
-instance
-  ServiceConnect Mpris
-    "changed"
-    (EffectFn1 { players ∷ Array Player } Unit) where
-  connectService = connectMpris "changed"
+type MprisSignals =
+  ( changed ∷ EffectFn1 { players ∷ Array Player } Unit
+  , "player-changed" ∷ EffectFn2 { players ∷ Array Player } BusName Unit
+  , "player-closed" ∷ EffectFn2 { players ∷ Array Player } BusName Unit
+  , "player-added" ∷ EffectFn2 { players ∷ Array Player } BusName Unit
+  )
 
 instance
-  ServiceConnect Mpris
-    "player-changed"
-    (EffectFn2 { players ∷ Array Player } BusName Unit) where
-  connectService = connectMpris "player-changed"
-
-instance
-  ServiceConnect Mpris
-    "player-closed"
-    (EffectFn2 { players ∷ Array Player } BusName Unit) where
-  connectService = connectMpris "player-closed"
-
-instance
-  ServiceConnect Mpris
-    "player-added"
-    (EffectFn2 { players ∷ Array Player } BusName Unit) where
-  connectService = connectMpris "player-added"
+  IsSymbol prop ⇒
+  ServiceConnect Mpris prop MprisSignals cb where
+  connectService = connectMpris (reflectSymbol (Proxy @prop))
 
 -- * Methods
 
