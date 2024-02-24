@@ -1,5 +1,5 @@
 export const connectImpl =
-  (signal, handler, object) =>
+  (signal, object, handler) =>
     object.connect(signal, handler)
 
 export const disconnectImpl =

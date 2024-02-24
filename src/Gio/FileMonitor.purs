@@ -1,4 +1,13 @@
-module Gio.FileMonitor where
+module Gio.FileMonitor
+  ( GioFileMonitor
+  , FileMonitorSignals
+  , monitor
+  , monitorFile
+  , monitorDirectory
+  , registerMonitor
+  , cancel
+  , isCanceled
+  ) where
 
 import Prelude
 
@@ -11,7 +20,7 @@ import Effect.Uncurried
   , runEffectFn1
   , runEffectFn2
   )
-import GObject (class GObjectSignal, unsafeConnect)
+import GObject (class GObjectSignal)
 import Gio.File (GioFile)
 import Gio.FileMonitorEvent (GioFileMonitorEvent)
 import Gio.FileMonitorFlags (GioFileMonitorFlags)
@@ -21,20 +30,12 @@ foreign import data GioFileMonitor ∷ Type
 
 -- * Signals
 
-type OnChangeCallback =
-  EffectFn4 GioFileMonitor GioFile GioFile GioFileMonitorEvent Unit
+type FileMonitorSignals =
+  ( changed ∷ EffectFn4 GioFileMonitor GioFile GioFile GioFileMonitorEvent Unit
+  , "notify::cancelled" ∷ EffectFn1 GioFileMonitor Unit
+  )
 
-instance
-  GObjectSignal "changed"
-    GioFileMonitor
-    OnChangeCallback where
-  connect cb mon = unsafeConnect @"changed" cb mon
-
-instance
-  GObjectSignal "notify::cancelled"
-    GioFileMonitor
-    (EffectFn1 GioFileMonitor Unit) where
-  connect cb mon = unsafeConnect @"notify::cancelled" cb mon
+instance GObjectSignal GioFileMonitor FileMonitorSignals
 
 -- * Methods
 

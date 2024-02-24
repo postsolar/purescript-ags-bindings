@@ -30,12 +30,7 @@ import Data.Nullable (Nullable, toMaybe)
 import Data.Symbol (class IsSymbol, reflectSymbol)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2)
-import GObject
-  ( class GObjectSignal
-  , HandlerID
-  , unsafeConnect
-  , unsafeCopyGObjectProps
-  )
+import GObject (class GObjectSignal, HandlerID, unsafeCopyGObjectProps)
 import Record as R
 import Record.Studio.MapKind (mapRecordKind)
 import Type.Proxy (Proxy(..))
@@ -224,11 +219,12 @@ instance BindProp Player "position" Number where
 
 -- * Signals
 
-instance GObjectSignal "position" Player (EffectFn2 Player Number Unit) where
-  connect cb player = unsafeConnect @"position" cb player
+type PlayerSignals =
+  ( position ∷ EffectFn2 Player Number Unit
+  , closed ∷ EffectFn1 Player Unit
+  )
 
-instance GObjectSignal "closed" Player (EffectFn1 Player Unit) where
-  connect cb player = unsafeConnect @"closed" cb player
+instance GObjectSignal Player PlayerSignals
 
 -- * Methods
 
