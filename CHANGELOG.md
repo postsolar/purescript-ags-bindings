@@ -4,6 +4,8 @@
 
 - Add `Binding.overBoth'` and remove constraints from `overValue`, `overBinding` and `overBoth`
 
+- Add `Widget.destroy`
+
 ## v0.2.0
 
 - Refactor GObject type classes (#14)
