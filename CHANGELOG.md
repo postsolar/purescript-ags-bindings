@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## v0.2.0
+
+- Refactor GObject type classes (#14)
+
+- Refactor service type classes (#13)
+
+- Add `Notifications` service (#11)
 
 - Update AGS and integrate recent changes (up to and incl. 5e3f479) (#8)
 
