@@ -1,5 +1,6 @@
 module AGS.Variable
   ( Variable
+  , VariableSignals
   , get
   , set
   , bindValue
@@ -11,15 +12,19 @@ module AGS.Variable
 
 import Prelude
 
-import AGS.Binding (Binding)
+import AGS.Binding (class BindProp, Binding, bindProp)
+import Data.Time.Duration (Milliseconds)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1)
-import GObject (class GObjectSignal, unsafeConnect)
+import GObject (class GObjectSignal)
 
 foreign import data Variable ∷ Type → Type
 
-instance GObjectSignal "changed" (Variable a) (EffectFn1 (Variable a) Unit) where
-  connect callback variable = unsafeConnect @"changed" callback variable
+type VariableSignals a =
+  ( changed ∷ EffectFn1 (Variable a) Unit
+  )
+
+instance GObjectSignal (Variable a) (VariableSignals a)
 
 -- | Get the value of a variable.
 foreign import get ∷ ∀ a. Variable a → Effect a
@@ -27,8 +32,16 @@ foreign import get ∷ ∀ a. Variable a → Effect a
 -- | Update the value of a variable.
 foreign import set ∷ ∀ a. (a → a) → Variable a → Effect Unit
 
+type VariableProps ∷ Type → Row Type
+type VariableProps a =
+  ( value ∷ a
+  )
+
+instance BindProp (Variable a) (VariableProps a)
+
 -- | Bind the value of a variable.
-foreign import bindValue ∷ ∀ a. Variable a → Binding a
+bindValue ∷ ∀ a. Variable a → Binding a
+bindValue = bindProp @"value"
 
 -- | Create a variable.
 foreign import store ∷ ∀ a. a → Variable a
@@ -37,7 +50,7 @@ foreign import store ∷ ∀ a. a → Variable a
 foreign import poll
   ∷ ∀ a
   . { initValue ∷ a
-    , interval ∷ Int
+    , interval ∷ Milliseconds
     , transform ∷ String → a
     , command ∷ Array String
     }
@@ -47,7 +60,7 @@ foreign import poll
 foreign import serve
   ∷ ∀ a
   . { initValue ∷ a
-    , interval ∷ Int
+    , interval ∷ Milliseconds
     , command ∷ Effect a
     }
   → Effect (Variable a)

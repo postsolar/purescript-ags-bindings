@@ -2,6 +2,7 @@ module AGS.Service.Notifications
   ( Notifications
   , NotificationsSignals
   , Notification
+  , NotificationSignals
   , NotificationID(..)
   , NotificationsOptions
   , NotificationRecord
@@ -43,12 +44,7 @@ import Data.Time.Duration (Milliseconds(..))
 import Effect (Effect)
 import Effect.Aff.Compat (runEffectFn1)
 import Effect.Uncurried (EffectFn2)
-import GObject
-  ( class GObjectSignal
-  , HandlerID
-  , unsafeConnect
-  , unsafeCopyGObjectProps
-  )
+import GObject (class GObjectSignal, HandlerID, unsafeCopyGObjectProps)
 import Partial.Unsafe (unsafePartial)
 import Record as Record
 import Record.Studio as RS
@@ -105,9 +101,7 @@ getOptions ∷ Effect { | NotificationsOptions }
 getOptions = getOptionsImpl (RS.keys (Proxy @NotificationsOptions))
 
 setOptions
-  ∷ ( { | NotificationsOptions }
-      → { | NotificationsOptions }
-    )
+  ∷ ({ | NotificationsOptions } → { | NotificationsOptions })
   → Effect Unit
 setOptions f = setOptionsImpl <<< f =<< getOptions
 
@@ -149,15 +143,13 @@ fromNotification =
 
 -- * Signals
 
-instance GObjectSignal "dismissed" Notification (EffectFn1 Notification Unit) where
-  connect cb notification = unsafeConnect @"dismissed" cb notification
+type NotificationSignals =
+  ( dismissed ∷ EffectFn1 Notification Unit
+  , closed ∷ EffectFn1 Notification Unit
+  , invoked ∷ EffectFn2 Notification ActionID Unit
+  )
 
-instance GObjectSignal "closed" Notification (EffectFn1 Notification Unit) where
-  connect cb notification = unsafeConnect @"closed" cb notification
-
-instance
-  GObjectSignal "invoked" Notification (EffectFn2 Notification ActionID Unit) where
-  connect cb notification = unsafeConnect @"invoked" cb notification
+instance GObjectSignal Notification NotificationSignals
 
 -- * Bindings and props
 

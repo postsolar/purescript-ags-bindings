@@ -7,6 +7,8 @@ module AGS.Service.Mpris
   , matchPlayer
   , BusName
   , Player
+  , PlayerProps
+  , PlayerSignals
   , PlayerRecord
   , PlayerRecordR
   , MprisMetadata
@@ -23,19 +25,14 @@ module AGS.Service.Mpris
 
 import Prelude
 
-import AGS.Binding (class BindProp, Binding, unsafeBindProp)
+import AGS.Binding (class BindProp, Binding)
 import AGS.Service (class BindServiceProp, class ServiceConnect, Service)
 import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe)
 import Data.Symbol (class IsSymbol, reflectSymbol)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1, EffectFn2)
-import GObject
-  ( class GObjectSignal
-  , HandlerID
-  , unsafeConnect
-  , unsafeCopyGObjectProps
-  )
+import GObject (class GObjectSignal, HandlerID, unsafeCopyGObjectProps)
 import Record as R
 import Record.Studio.MapKind (mapRecordKind)
 import Type.Proxy (Proxy(..))
@@ -157,78 +154,46 @@ fromPlayer = unsafeCopyGObjectProps @PlayerRecordR
   fromForeignMetadata ∷ MprisMetadataF UndefinedOr → MprisMetadata
   fromForeignMetadata = mapRecordKind uorToMaybe
 
--- the dbus name that starts with org.mpris.MediaPlayer2
-instance BindProp Player "bus-name" String where
-  bindProp o = unsafeBindProp @"bus-name" o
+type PlayerProps =
+  -- the dbus name that starts with org.mpris.MediaPlayer2
+  ( "bus-name" ∷ String
+  -- stripped from busName like spotify or firefox
+  , name ∷ String
+  -- name of the player like Spotify or Mozilla Firefox
+  , identity ∷ String
+  -- .desktop entry without the extension
+  , entry ∷ String
+  , trackid ∷ String
+  , "track-artists" ∷ Array String
+  , "track-album" ∷ String
+  , "track-title" ∷ String
+  , "track-cover-url" ∷ String
+  -- path to the cached cover art
+  , "cover-path" ∷ String
+  -- "Playing" | "Paused" | "Stopped"
+  , "play-back-status" ∷ String
+  , "can-go-next" ∷ Boolean
+  , "can-go-prev" ∷ Boolean
+  , "can-play" ∷ Boolean
+  -- null if shuffle is unsupported by the player
+  , "shuffle-status" ∷ Nullable Boolean
+  -- "None" | "Track" | "Playlist" | null if shuffle is unsupported by the player
+  , "loop-status" ∷ Nullable String
+  , volume ∷ Number
+  , length ∷ Number
+  , position ∷ Number
+  )
 
--- stripped from busName like spotify or firefox
-instance BindProp Player "name" String where
-  bindProp o = unsafeBindProp @"name" o
-
--- name of the player like Spotify or Mozilla Firefox
-instance BindProp Player "identity" String where
-  bindProp o = unsafeBindProp @"identity" o
-
--- .desktop entry without the extension
-instance BindProp Player "entry" String where
-  bindProp o = unsafeBindProp @"entry" o
-
-instance BindProp Player "trackid" String where
-  bindProp o = unsafeBindProp @"trackid" o
-
-instance BindProp Player "track-artists" (Array String) where
-  bindProp o = unsafeBindProp @"track-artists" o
-
-instance BindProp Player "track-album" String where
-  bindProp o = unsafeBindProp @"track-album" o
-
-instance BindProp Player "track-title" String where
-  bindProp o = unsafeBindProp @"track-title" o
-
-instance BindProp Player "track-cover-url" String where
-  bindProp o = unsafeBindProp @"track-cover-url" o
-
--- path to the cached cover art
-instance BindProp Player "cover-path" String where
-  bindProp o = unsafeBindProp @"cover-path" o
-
--- "Playing" | "Paused" | "Stopped"
-instance BindProp Player "play-back-status" String where
-  bindProp o = unsafeBindProp @"play-back-status" o
-
-instance BindProp Player "can-go-next" Boolean where
-  bindProp o = unsafeBindProp @"can-go-next" o
-
-instance BindProp Player "can-go-prev" Boolean where
-  bindProp o = unsafeBindProp @"can-go-prev" o
-
-instance BindProp Player "can-play" Boolean where
-  bindProp o = unsafeBindProp @"can-play" o
-
--- null if shuffle is unsupported by the player
-instance BindProp Player "shuffle-status" (Nullable Boolean) where
-  bindProp o = unsafeBindProp @"shuffle-status" o
-
--- "None" | "Track" | "Playlist" | null if shuffle is unsupported by the player
-instance BindProp Player "loop-status" (Nullable String) where
-  bindProp o = unsafeBindProp @"loop-status" o
-
-instance BindProp Player "volume" Number where
-  bindProp o = unsafeBindProp @"volume" o
-
-instance BindProp Player "length" Number where
-  bindProp o = unsafeBindProp @"length" o
-
-instance BindProp Player "position" Number where
-  bindProp o = unsafeBindProp @"position" o
+instance BindProp Player PlayerProps
 
 -- * Signals
 
-instance GObjectSignal "position" Player (EffectFn2 Player Number Unit) where
-  connect cb player = unsafeConnect @"position" cb player
+type PlayerSignals =
+  ( position ∷ EffectFn2 Player Number Unit
+  , closed ∷ EffectFn1 Player Unit
+  )
 
-instance GObjectSignal "closed" Player (EffectFn1 Player Unit) where
-  connect cb player = unsafeConnect @"closed" cb player
+instance GObjectSignal Player PlayerSignals
 
 -- * Methods
 
