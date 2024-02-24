@@ -6,17 +6,17 @@ module AGS.Binding
   , overValue
   , overBinding
   , overBoth
+  , overBoth'
   ) where
 
 import Prelude
 
 import Control.Apply (lift2)
-import Data.Either (either)
 import Data.Symbol (class IsSymbol, reflectSymbol)
 import Prim.Row as R
 import Type.Proxy (Proxy(..))
-import Untagged.TypeCheck (class HasRuntimeType)
-import Untagged.Union (OneOf, asOneOf, toEither1)
+import Unsafe.Coerce (unsafeCoerce)
+import Untagged.Union (OneOf, asOneOf)
 
 foreign import data Binding ∷ Type → Type
 
@@ -74,12 +74,16 @@ foreign import unsafeBindProp ∷ ∀ o t. String → o → Binding t
 
 type ValueOrBinding a = OneOf a (Binding a)
 
+-- Technically there's no guarantee of distinguishing between
+-- a `Bidning a` as a value and a `Binding (Binding a)` as a binding,
+-- but in practice it's not relevant for widgets because it's a type error
+-- to put a nested binding into any of their props anyways.
+
 -- | Transform a *value* inside a `ValueOrBinding`.
 -- | If `ValueOrBinding` is a binding, it stays unmodified.
 overValue
   ∷ ∀ a
-  . HasRuntimeType a
-  ⇒ (a → a)
+  . (a → a)
   → ValueOrBinding a
   → ValueOrBinding a
 overValue = flip overBoth identity
@@ -88,8 +92,7 @@ overValue = flip overBoth identity
 -- | If `ValueOrBinding` is a plain value, it stays unmodified.
 overBinding
   ∷ ∀ a
-  . HasRuntimeType a
-  ⇒ (Binding a → Binding a)
+  . (Binding a → Binding a)
   → ValueOrBinding a
   → ValueOrBinding a
 overBinding = overBoth identity
@@ -97,10 +100,22 @@ overBinding = overBoth identity
 -- | Transform both a plain value and a binding in `ValueOrBinding`.
 overBoth
   ∷ ∀ a b
-  . HasRuntimeType a
-  ⇒ (a → b)
+  . (a → b)
   → (Binding a → Binding b)
   → ValueOrBinding a
   → ValueOrBinding b
-overBoth f g sob = either (asOneOf <<< f) (asOneOf <<< g) $ toEither1 sob
+overBoth f g vob
+  | isBinding vob = asOneOf $ g (unsafeCoerce vob ∷ Binding a)
+  | otherwise = asOneOf $ f (unsafeCoerce vob ∷ a)
+
+-- | Transform both a plain value and a binding in `ValueOrBinding`,
+-- | with the same function for each case.
+overBoth'
+  ∷ ∀ a b
+  . (a → b)
+  → ValueOrBinding a
+  → ValueOrBinding b
+overBoth' f = overBoth f (map f)
+
+foreign import isBinding ∷ ∀ a. a → Boolean
 

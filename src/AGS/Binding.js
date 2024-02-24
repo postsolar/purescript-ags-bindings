@@ -1,3 +1,5 @@
+import { Binding } from 'resource:///com/github/Aylur/ags/service.js'
+
 export const unsafeBindProp =
   prop => object =>
     object.bind(prop)
@@ -25,4 +27,8 @@ export const bindBinding =
         })
       return watcher.bind()
     }
+
+export const isBinding =
+  val =>
+    val instanceof Binding
 
