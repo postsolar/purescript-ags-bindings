@@ -20,6 +20,7 @@ module AGS.Service.Notifications
   , close
   , invoke
   , fromAction
+  , disconnectNotifications
   ) where
 
 import Prelude
