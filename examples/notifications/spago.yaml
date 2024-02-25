@@ -1,0 +1,13 @@
+package:
+  name: notifications
+  dependencies:
+    - ags-bindings
+    - effect
+    - prelude
+workspace:
+  package_set:
+    registry: 50.0.0
+  extra_packages:
+    ags-bindings:
+      git: https://github.com/postsolar/purescript-ags-bindings.git
+      ref: master
