@@ -58,12 +58,12 @@ class
 -- | connect @"changed" myObject \_obj info → log info
 -- | ```
 connect
-  ∷ ∀ @sig @obj cb pcb rt os ovs
+  ∷ ∀ @sig @obj cb pcb rt rt' os ovs
   . R.Cons sig cb rt os
   -- This constraint aids the compiler find the type of
   -- the processed callback to project the variant's value.
   -- It shouldn't be removed.
-  ⇒ R.Cons sig pcb rt ovs
+  ⇒ R.Cons sig pcb rt' ovs
   ⇒ GObjectSignal obj os ovs
   ⇒ IsSymbol sig
   ⇒ obj
