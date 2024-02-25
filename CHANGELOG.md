@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Turn `GioFileMonitorEvent` into an enum (instead of opaque type) (#15)
+
+- Internal: allow `GObjectSignal` instances to override callbacks (e.g. to map GJS types to more rict PureScript types) (#15)
+
 - Add a notifications daemon example
 
 - Add `Utils.lookupIcon` and `Gtk.IconInfo.filename` (#6)
