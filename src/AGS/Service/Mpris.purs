@@ -8,7 +8,7 @@ module AGS.Service.Mpris
   , Player
   , PlayerProps
   , PlayerSignals
-  , PlayerSignalsOverrides 
+  , PlayerSignalsOverrides
   , PlayerPosition(..)
   , PlayerRecord
   , PlayerRecordR
@@ -93,7 +93,7 @@ newtype BusName = BusName String
 
 derive instance Newtype BusName _
 instance Show BusName where
-  show (BusName bn) = "(BusName " <> bn <> ")"
+  show (BusName bn) = "(BusName " <> show bn <> ")"
 
 derive newtype instance Eq BusName
 
