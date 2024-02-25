@@ -1,6 +1,7 @@
 module AGS.Variable
   ( Variable
   , VariableSignals
+  , VariableSignalsOverrides
   , get
   , set
   , bindValue
@@ -14,17 +15,25 @@ import Prelude
 
 import AGS.Binding (class BindProp, Binding, bindProp)
 import Data.Time.Duration (Milliseconds)
+import Data.Variant as V
 import Effect (Effect)
-import Effect.Uncurried (EffectFn1)
+import Effect.Uncurried (EffectFn1, mkEffectFn1)
 import GObject (class GObjectSignal)
 
 foreign import data Variable ∷ Type → Type
 
 type VariableSignals a =
+  ( changed ∷ Variable a → Effect Unit
+  )
+
+type VariableSignalsOverrides a =
   ( changed ∷ EffectFn1 (Variable a) Unit
   )
 
-instance GObjectSignal (Variable a) (VariableSignals a)
+instance
+  GObjectSignal (Variable a) (VariableSignals a) (VariableSignalsOverrides a)
+  where
+  overrides = V.over { changed: mkEffectFn1 }
 
 -- | Get the value of a variable.
 foreign import get ∷ ∀ a. Variable a → Effect a

@@ -1,6 +1,7 @@
 module Gio.FileMonitor
   ( GioFileMonitor
   , FileMonitorSignals
+  , FileMonitorSignalsOverrides
   , monitor
   , monitorFile
   , monitorDirectory
@@ -11,12 +12,17 @@ module Gio.FileMonitor
 
 import Prelude
 
+import Data.Enum (toEnum)
+import Data.Maybe (fromJust)
 import Data.Nullable (Nullable)
+import Data.Variant as V
 import Effect (Effect)
 import Effect.Uncurried
   ( EffectFn1
   , EffectFn2
   , EffectFn4
+  , mkEffectFn1
+  , mkEffectFn4
   , runEffectFn1
   , runEffectFn2
   )
@@ -24,6 +30,7 @@ import GObject (class GObjectSignal)
 import Gio.File (GioFile)
 import Gio.FileMonitorEvent (GioFileMonitorEvent)
 import Gio.FileMonitorFlags (GioFileMonitorFlags)
+import Partial.Unsafe (unsafePartial)
 import Unsafe.Coerce (unsafeCoerce)
 
 foreign import data GioFileMonitor ∷ Type
@@ -31,11 +38,24 @@ foreign import data GioFileMonitor ∷ Type
 -- * Signals
 
 type FileMonitorSignals =
-  ( changed ∷ EffectFn4 GioFileMonitor GioFile GioFile GioFileMonitorEvent Unit
+  ( changed ∷
+      GioFileMonitor → GioFile → GioFile → GioFileMonitorEvent → Effect Unit
+  , "notify::cancelled" ∷ GioFileMonitor → Effect Unit
+  )
+
+type FileMonitorSignalsOverrides =
+  ( changed ∷ EffectFn4 GioFileMonitor GioFile GioFile Int Unit
   , "notify::cancelled" ∷ EffectFn1 GioFileMonitor Unit
   )
 
-instance GObjectSignal GioFileMonitor FileMonitorSignals
+instance
+  GObjectSignal GioFileMonitor FileMonitorSignals FileMonitorSignalsOverrides
+  where
+  overrides = V.over
+    { changed: \cb → mkEffectFn4 \a b c int →
+        cb a b c (unsafePartial $ fromJust $ toEnum int)
+    , "notify::cancelled": mkEffectFn1
+    }
 
 -- * Methods
 
