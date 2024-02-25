@@ -5,12 +5,14 @@ module AGS.Service.Mpris
   , disconnectMpris
   , players
   , matchPlayer
-  , BusName
   , Player
   , PlayerProps
   , PlayerSignals
+  , PlayerSignalsOverrides
+  , PlayerPosition(..)
   , PlayerRecord
   , PlayerRecordR
+  , BusName(..)
   , MprisMetadata
   , MprisMetadataF
   , fromPlayer
@@ -28,10 +30,12 @@ import Prelude
 import AGS.Binding (class BindProp, Binding)
 import AGS.Service (class BindServiceProp, class ServiceConnect, Service)
 import Data.Maybe (Maybe)
+import Data.Newtype (class Newtype)
 import Data.Nullable (Nullable, toMaybe)
 import Data.Symbol (class IsSymbol, reflectSymbol)
+import Data.Variant as V
 import Effect (Effect)
-import Effect.Uncurried (EffectFn1, EffectFn2)
+import Effect.Uncurried (EffectFn1, EffectFn2, mkEffectFn1, mkEffectFn2)
 import GObject (class GObjectSignal, HandlerID, unsafeCopyGObjectProps)
 import Record as R
 import Record.Studio.MapKind (mapRecordKind)
@@ -83,34 +87,51 @@ foreign import matchPlayerImpl ∷ String → Effect (Nullable Player)
 
 -- *** Player
 
+foreign import data Player ∷ Type
+
 newtype BusName = BusName String
+
+derive instance Newtype BusName _
+instance Show BusName where
+  show (BusName bn) = "(BusName " <> show bn <> ")"
+
+derive newtype instance Eq BusName
+
+newtype PlayerPosition = PlayerPosition Number
+
+derive instance Newtype PlayerPosition _
+
+instance Show PlayerPosition where
+  show (PlayerPosition pos) = "(PlayerPosition " <> show pos <> ")"
+
+derive newtype instance Eq PlayerPosition
+derive newtype instance Ord PlayerPosition
+derive newtype instance Semiring PlayerPosition
 
 type PlayerRecord = Record PlayerRecordR
 
 type PlayerRecordR =
-  ( "bus-name" ∷ String
+  ( "bus-name" ∷ BusName
   , "can-go-next" ∷ Boolean
   , "can-go-prev" ∷ Boolean
   , "can-play" ∷ Boolean
   , "cover-path" ∷ Maybe String
   , entry ∷ String
   , identity ∷ String
-  , length ∷ Int
+  , length ∷ Number
   , "loop-status" ∷ Maybe Boolean
   , metadata ∷ MprisMetadata
   , name ∷ String
   , "play-back-status" ∷ String
-  , position ∷ Int
+  , position ∷ PlayerPosition
   , "shuffle-status" ∷ Maybe Boolean
   , "track-artists" ∷ Array String
   , "track-cover-url" ∷ String
   , "track-title" ∷ String
   , "track-album" ∷ String
   , trackid ∷ String
-  , volume ∷ Int
+  , volume ∷ Number
   )
-
-foreign import data Player ∷ Type
 
 type MprisMetadata = MprisMetadataF Maybe
 
@@ -156,7 +177,7 @@ fromPlayer = unsafeCopyGObjectProps @PlayerRecordR
 
 type PlayerProps =
   -- the dbus name that starts with org.mpris.MediaPlayer2
-  ( "bus-name" ∷ String
+  ( "bus-name" ∷ BusName
   -- stripped from busName like spotify or firefox
   , name ∷ String
   -- name of the player like Spotify or Mozilla Firefox
@@ -189,11 +210,17 @@ instance BindProp Player PlayerProps
 -- * Signals
 
 type PlayerSignals =
-  ( position ∷ EffectFn2 Player Number Unit
+  ( position ∷ Player → PlayerPosition → Effect Unit
+  , closed ∷ Player → Effect Unit
+  )
+
+type PlayerSignalsOverrides =
+  ( position ∷ EffectFn2 Player PlayerPosition Unit
   , closed ∷ EffectFn1 Player Unit
   )
 
-instance GObjectSignal Player PlayerSignals
+instance GObjectSignal Player PlayerSignals PlayerSignalsOverrides where
+  overrides = V.over { position: mkEffectFn2, closed: mkEffectFn1 }
 
 -- * Methods
 

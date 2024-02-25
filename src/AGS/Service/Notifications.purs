@@ -41,9 +41,10 @@ import Data.Nullable (Nullable, toMaybe)
 import Data.Show.Generic (genericShow)
 import Data.Symbol (class IsSymbol, reflectSymbol)
 import Data.Time.Duration (Milliseconds(..))
+import Data.Variant as V
 import Effect (Effect)
-import Effect.Aff.Compat (runEffectFn1)
-import Effect.Uncurried (EffectFn2)
+import Effect.Aff.Compat (mkEffectFn1, runEffectFn1)
+import Effect.Uncurried (EffectFn2, mkEffectFn2)
 import GObject (class GObjectSignal, HandlerID, unsafeCopyGObjectProps)
 import Partial.Unsafe (unsafePartial)
 import Record as Record
@@ -144,12 +145,21 @@ fromNotification =
 -- * Signals
 
 type NotificationSignals =
+  ( dismissed ∷ Notification → Effect Unit
+  , closed ∷ Notification → Effect Unit
+  , invoked ∷ Notification → ActionID → Effect Unit
+  )
+
+type NotificationSignalsOverrides =
   ( dismissed ∷ EffectFn1 Notification Unit
   , closed ∷ EffectFn1 Notification Unit
   , invoked ∷ EffectFn2 Notification ActionID Unit
   )
 
-instance GObjectSignal Notification NotificationSignals
+instance
+  GObjectSignal Notification NotificationSignals NotificationSignalsOverrides where
+  overrides = V.over
+    { dismissed: mkEffectFn1, closed: mkEffectFn1, invoked: mkEffectFn2 }
 
 -- * Bindings and props
 
