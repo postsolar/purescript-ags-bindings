@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fix `classNames` property of `AgsWidget` not being `ValueOrBinding (Array String)` but instead just `Array String`
+
 - Turn `GioFileMonitorEvent` into an enum (instead of opaque type) (#15)
 
 - Internal: allow `GObjectSignal` instances to override callbacks (e.g. to map GJS types to more rict PureScript types) (#15)

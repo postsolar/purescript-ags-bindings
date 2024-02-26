@@ -113,7 +113,7 @@ type AGSWidgetProps r =
     +
       ( setup ∷ EffectFn1 Widget Unit
       , className ∷ ValueOrBinding String
-      , classNames ∷ Array String
+      , classNames ∷ ValueOrBinding (Array String)
       , css ∷ ValueOrBinding String
       , hpack ∷ ValueOrBinding String {- TODO make it a proper type -}
       , vpack ∷ ValueOrBinding String {- TODO make it a proper type -}
