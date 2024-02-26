@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v0.3.0
+
+- Fix `xalign` and `yalign` properties of some widgets not being `Int` but instead `Number`
+
 - Fix `classNames` property of `AgsWidget` not being `ValueOrBinding (Array String)` but instead just `Array String`
 
 - Turn `GioFileMonitorEvent` into an enum (instead of opaque type) (#15)
