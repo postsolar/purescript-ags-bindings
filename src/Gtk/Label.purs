@@ -26,8 +26,8 @@ type GtkLabelProps r =
   , widthChars ∷ ValueOrBinding Number
   , wrap ∷ ValueOrBinding Boolean
   -- , wrapMode ∷ ValueOrBinding Pango.WrapMode
-  , xalign ∷ ValueOrBinding Number
-  , yalign ∷ ValueOrBinding Number
+  , xalign ∷ ValueOrBinding Int
+  , yalign ∷ ValueOrBinding Int
   | r
   )
 

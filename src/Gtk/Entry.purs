@@ -53,7 +53,7 @@ type GtkEntryProps r =
   , truncateMultiline ∷ Boolean
   , visibility ∷ Boolean
   , widthChars ∷ Number
-  , xalign ∷ Number
+  , xalign ∷ Int
   | r
   )
 

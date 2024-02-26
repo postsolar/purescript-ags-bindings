@@ -13,8 +13,8 @@ type GtkButtonProps r =
   -- , relief ∷ ValueOrBinding Gtk.ReliefStyle
   , useStock ∷ ValueOrBinding Boolean
   , useUnderline ∷ ValueOrBinding Boolean
-  , xalign ∷ ValueOrBinding Number
-  , yalign ∷ ValueOrBinding Number
+  , xalign ∷ ValueOrBinding Int
+  , yalign ∷ ValueOrBinding Int
   | r
   )
 
